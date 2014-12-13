@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NppModelica")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Notepad++ Plugin")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MyName")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NppModelica")]
-[assembly: AssemblyCopyright("Copyright © MyName 2011")]
+[assembly: AssemblyCopyright("Copyright © Lennart A. Ochel 2013-2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

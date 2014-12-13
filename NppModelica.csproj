@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4ada9597-508e-4150-8e70-b09db90628c1}</ProjectGuid>
+    <ProjectGuid>{4ADA9597-508E-4150-8E70-B09DB90628C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NppModelica</RootNamespace>
@@ -35,17 +35,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExport\DllExportAttribute.cs" />
-    <Compile Include="Forms\frmMyDlg.cs">
+    <Compile Include="Forms\CallGraph.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmMyDlg.Designer.cs">
-      <DependentUpon>frmMyDlg.cs</DependentUpon>
+    <Compile Include="Forms\CallGraph.designer.cs">
+      <DependentUpon>CallGraph.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MetaModelica.cs" />
+    <Compile Include="Forms\MMBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MMBrowser.designer.cs">
+      <DependentUpon>MMBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Lexer\Lexer.cs" />
+    <Compile Include="Lexer\Token.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="NppPluginNETBase.cs" />
     <Compile Include="NppPluginNETHelper.cs" />
@@ -58,14 +68,59 @@
     <Compile Include="UnmanagedExports.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\frmMyDlg.resx">
-      <DependentUpon>frmMyDlg.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\CallGraph.resx">
+      <DependentUpon>CallGraph.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MMBrowser.resx">
+      <DependentUpon>MMBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\constant.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\constant_public.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\function.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\function_public.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon_bmp.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\package.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\package_public.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\record.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\record_public.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\type.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\type_public.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\uniontype.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\uniontype_public.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />

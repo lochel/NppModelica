@@ -11,29 +11,35 @@ namespace NppModelica
 {
     class Main
     {
-        #region " Fields "
         internal const string PluginName = "NppModelica";
-        static string iniFilePath = null;
-        static bool someSetting = false;
-        static frmMyDlg frmMyDlg = null;
-        static int idMyDlg = -1;
-        static Bitmap tbBmp = Properties.Resources.star;
-        static Bitmap tbBmp_tbTab = Properties.Resources.star_bmp;
+        internal const string PluginVersionNumber = "0.2.1";
+        internal const string PluginVersion = PluginVersionNumber + " [r73]";
+        static public string iniFilePath = null;
+        public static MMBrowser frmMMBrowser = null;
+        public static Boolean initialized = false;
+        static int idMMBrowser = -1;
+        static Bitmap tbBmp = Properties.Resources.icon;
+        static Bitmap tbBmp_tbTab = Properties.Resources.icon_bmp;
         static Icon tbIcon = null;
-        #endregion
 
-        #region " StartUp/CleanUp "
+        #region StartUp/CleanUp
         internal static void CommandMenuInit()
         {
             StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
             iniFilePath = sbIniFilePath.ToString();
-            if (!Directory.Exists(iniFilePath)) Directory.CreateDirectory(iniFilePath);
-            iniFilePath = Path.Combine(iniFilePath, PluginName + ".ini");
-            someSetting = (Win32.GetPrivateProfileInt("SomeSection", "SomeKey", 0, iniFilePath) != 0);
 
-            PluginBase.SetCommand(0, "MyMenuCommand", myMenuFunction, new ShortcutKey(false, false, false, Keys.None));
-            PluginBase.SetCommand(1, "MyDockableDialog", myDockableDialog); idMyDlg = 1;
+            if (!Directory.Exists(iniFilePath))
+                Directory.CreateDirectory(iniFilePath);
+
+            iniFilePath = Path.Combine(iniFilePath, PluginName + ".ini");
+            Boolean visible = (Win32.GetPrivateProfileInt("General", "visible", 1, iniFilePath) != 0);
+
+            PluginBase.SetCommand(0, "About", cmdAbout, new ShortcutKey(false, false, false, Keys.None));
+            PluginBase.SetCommand(1, "MetaModelica Browser", cmdMMBrowser); idMMBrowser = 1;
+
+            if (visible)
+                cmdMMBrowser();
         }
         internal static void SetToolBarIcon()
         {
@@ -41,25 +47,27 @@ namespace NppModelica
             tbIcons.hToolbarBmp = tbBmp.GetHbitmap();
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
-            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginBase._funcItems.Items[idMyDlg]._cmdID, pTbIcons);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON, PluginBase._funcItems.Items[idMMBrowser]._cmdID, pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
         internal static void PluginCleanUp()
         {
-            Win32.WritePrivateProfileString("SomeSection", "SomeKey", someSetting ? "1" : "0", iniFilePath);
+            Boolean visible = false;
+            if (frmMMBrowser != null)
+                visible = frmMMBrowser.Visible;
+            Win32.WritePrivateProfileString("General", "visible", visible ? "1" : "0", iniFilePath);
         }
         #endregion
 
-        #region " Menu functions "
-        internal static void myMenuFunction()
+        internal static void cmdAbout()
         {
-            MessageBox.Show("Hello N++!");
+            MessageBox.Show(PluginName + " Plugin for Notepad++\nVersion " + PluginVersion + "\n\n(c) 2013-2014, Lennart A. Ochel", PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        internal static void myDockableDialog()
+        internal static void cmdMMBrowser()
         {
-            if (frmMyDlg == null)
+            if (frmMMBrowser == null)
             {
-                frmMyDlg = new frmMyDlg();
+                frmMMBrowser = new MMBrowser();
 
                 using (Bitmap newBmp = new Bitmap(16, 16))
                 {
@@ -75,9 +83,9 @@ namespace NppModelica
                 }
 
                 NppTbData _nppTbData = new NppTbData();
-                _nppTbData.hClient = frmMyDlg.Handle;
-                _nppTbData.pszName = "My dockable dialog";
-                _nppTbData.dlgID = idMyDlg;
+                _nppTbData.hClient = frmMMBrowser.Handle;
+                _nppTbData.pszName = "MetaModelica Browser";
+                _nppTbData.dlgID = idMMBrowser;
                 _nppTbData.uMask = NppTbMsg.DWS_DF_CONT_RIGHT | NppTbMsg.DWS_ICONTAB | NppTbMsg.DWS_ICONBAR;
                 _nppTbData.hIconTab = (uint)tbIcon.Handle;
                 _nppTbData.pszModuleName = PluginName;
@@ -88,9 +96,8 @@ namespace NppModelica
             }
             else
             {
-                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DMMSHOW, 0, frmMyDlg.Handle);
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DMMSHOW, 0, frmMMBrowser.Handle);
             }
         }
-        #endregion
     }
 }
