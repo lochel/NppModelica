@@ -56,6 +56,10 @@ namespace NppModelica
                 Main.PluginCleanUp();
                 Marshal.FreeHGlobal(_ptrPluginName);
             }
+            else if(Main.initialized == true)
+            {
+                Main.frmMMBrowser.notification(nc);
+            }
         }
     }
 }
