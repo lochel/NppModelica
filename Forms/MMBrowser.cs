@@ -16,7 +16,6 @@ namespace NppModelica
         public MetaModelica.Scope scope = null;
         public Modelica.Parser.Lexer lexer = null;
 
-        public CallGraph callGraphForm = null;
         public String dataPath = "";
 
         protected const Int32 iPackage = 0;
@@ -388,8 +387,6 @@ namespace NppModelica
                             System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
                             //callGraphForm.updateCallGraph(System.IO.Path.Combine(dataPath, packageName + ".svg"));
                         }
-                        if (callGraphForm != null)
-                            callGraphForm.updateCallGraph(System.IO.Path.Combine(dataPath, "temp.svg"), p.name);
                     }
                     catch (Exception e)
                     {
@@ -624,17 +621,9 @@ namespace NppModelica
         private void callGraphViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             callGraphToolStripMenuItem.Checked = true;
-
-            if (callGraphForm != null)
-            {
-                callGraphForm.Close();
-            }
-            else
-            {
-                callGraphForm = new CallGraph(this);
-                callGraphForm.Show();
-                updateOutline(false);
-            }
+            String filename = System.IO.Path.Combine(dataPath, "temp.svg");
+            if(System.IO.File.Exists(filename))
+                System.Diagnostics.Process.Start(filename);
         }
 
         private void callGraphToolStripMenuItem_Click(object sender, EventArgs e)

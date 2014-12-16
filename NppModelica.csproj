@@ -41,12 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExport\DllExportAttribute.cs" />
-    <Compile Include="Forms\CallGraph.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\CallGraph.designer.cs">
-      <DependentUpon>CallGraph.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\MetaModelica.cs" />
     <Compile Include="Forms\MMBrowser.cs">
       <SubType>Form</SubType>
@@ -68,9 +62,6 @@
     <Compile Include="UnmanagedExports.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\CallGraph.resx">
-      <DependentUpon>CallGraph.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MMBrowser.resx">
       <DependentUpon>MMBrowser.cs</DependentUpon>
     </EmbeddedResource>
