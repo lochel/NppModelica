@@ -266,6 +266,8 @@ namespace NppModelica
             if (fullfilename.Substring(fullfilename.Length - 3) != ".mo")
                 return;
 
+            treeView1.BeginUpdate();
+
             try
             {
                 richTextBox1.Text = "";
@@ -294,13 +296,16 @@ namespace NppModelica
                 {
                     foreach (MetaModelica.Constant cst in scope.constants.Values)
                     {
-                        TreeNode cstNode = new TreeNode();
-                        cstNode.Text = cst.name;
-                        cstNode.Tag = cst;
-                        cstNode.ImageIndex = iConstantPublic;
-                        cstNode.SelectedImageIndex = iConstantPublic;
+                        if (cst.name.Contains(textBox1.Text))
+                        {
+                            TreeNode cstNode = new TreeNode();
+                            cstNode.Text = cst.name;
+                            cstNode.Tag = cst;
+                            cstNode.ImageIndex = iConstantPublic;
+                            cstNode.SelectedImageIndex = iConstantPublic;
 
-                        treeView1.Nodes.Add(cstNode);
+                            treeView1.Nodes.Add(cstNode);
+                        }
                     }
                 }
 
@@ -308,13 +313,16 @@ namespace NppModelica
                 {
                     foreach (MetaModelica.Type typ in scope.types.Values)
                     {
-                        TreeNode typNode = new TreeNode();
-                        typNode.Text = typ.name;
-                        typNode.Tag = typ;
-                        typNode.ImageIndex = iTypePublic;
-                        typNode.SelectedImageIndex = iTypePublic;
+                        if (typ.name.Contains(textBox1.Text))
+                        {
+                            TreeNode typNode = new TreeNode();
+                            typNode.Text = typ.name;
+                            typNode.Tag = typ;
+                            typNode.ImageIndex = iTypePublic;
+                            typNode.SelectedImageIndex = iTypePublic;
 
-                        treeView1.Nodes.Add(typNode);
+                            treeView1.Nodes.Add(typNode);
+                        }
                     }
                 }
 
@@ -322,13 +330,16 @@ namespace NppModelica
                 {
                     foreach (MetaModelica.Record rcd in scope.records.Values)
                     {
-                        TreeNode rcdNode = new TreeNode();
-                        rcdNode.Text = rcd.name;
-                        rcdNode.Tag = rcd;
-                        rcdNode.ImageIndex = iRecordPublic;
-                        rcdNode.SelectedImageIndex = iRecordPublic;
+                        if (rcd.name.Contains(textBox1.Text))
+                        {
+                            TreeNode rcdNode = new TreeNode();
+                            rcdNode.Text = rcd.name;
+                            rcdNode.Tag = rcd;
+                            rcdNode.ImageIndex = iRecordPublic;
+                            rcdNode.SelectedImageIndex = iRecordPublic;
 
-                        treeView1.Nodes.Add(rcdNode);
+                            treeView1.Nodes.Add(rcdNode);
+                        }
                     }
                 }
 
@@ -342,18 +353,26 @@ namespace NppModelica
                         utyNode.ImageIndex = iUniontypePublic;
                         utyNode.SelectedImageIndex = iUniontypePublic;
 
+                        bool emptyUty = true;
                         foreach (MetaModelica.Record rcd in uty.records.Values)
                         {
-                            TreeNode rcdNode = new TreeNode();
-                            rcdNode.Text = rcd.name;
-                            rcdNode.Tag = rcd;
-                            rcdNode.ImageIndex = iRecordPublic;
-                            rcdNode.SelectedImageIndex = iRecordPublic;
+                            if (uty.name.Contains(textBox1.Text) || rcd.name.Contains(textBox1.Text))
+                            {
+                                TreeNode rcdNode = new TreeNode();
+                                rcdNode.Text = rcd.name;
+                                rcdNode.Tag = rcd;
+                                rcdNode.ImageIndex = iRecordPublic;
+                                rcdNode.SelectedImageIndex = iRecordPublic;
 
-                            utyNode.Nodes.Add(rcdNode);
+                                utyNode.Nodes.Add(rcdNode);
+                                emptyUty = false;
+                            }
                         }
 
-                        treeView1.Nodes.Add(utyNode);
+                        if (uty.name.Contains(textBox1.Text) || !emptyUty)
+                        {
+                            treeView1.Nodes.Add(utyNode);
+                        }
                     }
                 }
 
@@ -366,10 +385,10 @@ namespace NppModelica
                     node.ImageIndex = iPackagePublic;
                     node.SelectedImageIndex = iPackagePublic;
 
-                    try
+                    // call graph
+                    if (callGraphToolStripMenuItem.Checked)
                     {
-                        // call graph
-                        if (callGraphToolStripMenuItem.Checked)
+                        try
                         {
                             List<string> unusedFunctions;
                             String dotSource = p.getGraphvizSource(out unusedFunctions);
@@ -400,37 +419,43 @@ namespace NppModelica
                             System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
                             //callGraphForm.updateCallGraph(System.IO.Path.Combine(dataPath, packageName + ".svg"));
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        toolStripStatusLabel1.Text = e.Message;
-                        MessageBox.Show(e.Message);
+                        catch (Exception e)
+                        {
+                            toolStripStatusLabel1.Text = e.Message;
+                            MessageBox.Show(e.Message);
+                        }
                     }
 
                     if (functionToolStripMenuItem.Checked)
                     {
                         foreach (MetaModelica.Function fcn in p.publicFunctions.Values)
                         {
-                            TreeNode fcnNode = new TreeNode();
-                            fcnNode.Text = fcn.name;
-                            fcnNode.Tag = fcn;
-                            fcnNode.ImageIndex = iFunctionPublic;
-                            fcnNode.SelectedImageIndex = iFunctionPublic;
+                            if (fcn.name.Contains(textBox1.Text))
+                            {
+                                TreeNode fcnNode = new TreeNode();
+                                fcnNode.Text = fcn.name;
+                                fcnNode.Tag = fcn;
+                                fcnNode.ImageIndex = iFunctionPublic;
+                                fcnNode.SelectedImageIndex = iFunctionPublic;
 
-                            node.Nodes.Add(fcnNode);
+                                node.Nodes.Add(fcnNode);
+                            }
                         }
                     }
                     if (functionToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
                     {
                         foreach (MetaModelica.Function fcn in p.protectedFunctions.Values)
                         {
-                            TreeNode fcnNode = new TreeNode();
-                            fcnNode.Text = fcn.name;
-                            fcnNode.Tag = fcn;
-                            fcnNode.ImageIndex = iFunction;
-                            fcnNode.SelectedImageIndex = iFunction;
+                            if (fcn.name.Contains(textBox1.Text))
+                            {
+                                TreeNode fcnNode = new TreeNode();
+                                fcnNode.Text = fcn.name;
+                                fcnNode.Tag = fcn;
+                                fcnNode.ImageIndex = iFunction;
+                                fcnNode.SelectedImageIndex = iFunction;
 
-                            node.Nodes.Add(fcnNode);
+                                node.Nodes.Add(fcnNode);
+                            }
                         }
                     }
 
@@ -438,26 +463,32 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Type typ in p.publicTypes.Values)
                         {
-                            TreeNode typNode = new TreeNode();
-                            typNode.Text = typ.name;
-                            typNode.Tag = typ;
-                            typNode.ImageIndex = iTypePublic;
-                            typNode.SelectedImageIndex = iTypePublic;
+                            if (typ.name.Contains(textBox1.Text))
+                            {
+                                TreeNode typNode = new TreeNode();
+                                typNode.Text = typ.name;
+                                typNode.Tag = typ;
+                                typNode.ImageIndex = iTypePublic;
+                                typNode.SelectedImageIndex = iTypePublic;
 
-                            node.Nodes.Add(typNode);
+                                node.Nodes.Add(typNode);
+                            }
                         }
                     }
                     if (functionToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
                     {
                         foreach (MetaModelica.Type typ in p.protectedTypes.Values)
                         {
-                            TreeNode typNode = new TreeNode();
-                            typNode.Text = typ.name;
-                            typNode.Tag = typ;
-                            typNode.ImageIndex = iType;
-                            typNode.SelectedImageIndex = iType;
+                            if (typ.name.Contains(textBox1.Text))
+                            {
+                                TreeNode typNode = new TreeNode();
+                                typNode.Text = typ.name;
+                                typNode.Tag = typ;
+                                typNode.ImageIndex = iType;
+                                typNode.SelectedImageIndex = iType;
 
-                            node.Nodes.Add(typNode);
+                                node.Nodes.Add(typNode);
+                            }
                         }
                     }
 
@@ -465,26 +496,32 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Record rcd in p.publicRecords.Values)
                         {
-                            TreeNode rcdNode = new TreeNode();
-                            rcdNode.Text = rcd.name;
-                            rcdNode.Tag = rcd;
-                            rcdNode.ImageIndex = iRecordPublic;
-                            rcdNode.SelectedImageIndex = iRecordPublic;
+                            if (rcd.name.Contains(textBox1.Text))
+                            {
+                                TreeNode rcdNode = new TreeNode();
+                                rcdNode.Text = rcd.name;
+                                rcdNode.Tag = rcd;
+                                rcdNode.ImageIndex = iRecordPublic;
+                                rcdNode.SelectedImageIndex = iRecordPublic;
 
-                            node.Nodes.Add(rcdNode);
+                                node.Nodes.Add(rcdNode);
+                            }
                         }
                     }
                     if (recordToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
                     {
                         foreach (MetaModelica.Record rcd in p.protectedRecords.Values)
                         {
-                            TreeNode rcdNode = new TreeNode();
-                            rcdNode.Text = rcd.name;
-                            rcdNode.Tag = rcd;
-                            rcdNode.ImageIndex = iRecord;
-                            rcdNode.SelectedImageIndex = iRecord;
+                            if (rcd.name.Contains(textBox1.Text))
+                            {
+                                TreeNode rcdNode = new TreeNode();
+                                rcdNode.Text = rcd.name;
+                                rcdNode.Tag = rcd;
+                                rcdNode.ImageIndex = iRecord;
+                                rcdNode.SelectedImageIndex = iRecord;
 
-                            node.Nodes.Add(rcdNode);
+                                node.Nodes.Add(rcdNode);
+                            }
                         }
                     }
 
@@ -492,26 +529,32 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Constant cst in p.publicConstants.Values)
                         {
-                            TreeNode cstNode = new TreeNode();
-                            cstNode.Text = cst.name;
-                            cstNode.Tag = cst;
-                            cstNode.ImageIndex = iConstantPublic;
-                            cstNode.SelectedImageIndex = iConstantPublic;
+                            if (cst.name.Contains(textBox1.Text))
+                            {
+                                TreeNode cstNode = new TreeNode();
+                                cstNode.Text = cst.name;
+                                cstNode.Tag = cst;
+                                cstNode.ImageIndex = iConstantPublic;
+                                cstNode.SelectedImageIndex = iConstantPublic;
 
-                            node.Nodes.Add(cstNode);
+                                node.Nodes.Add(cstNode);
+                            }
                         }
                     }
                     if (constantToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
                     {
                         foreach (MetaModelica.Constant cst in p.protectedConstants.Values)
                         {
-                            TreeNode cstNode = new TreeNode();
-                            cstNode.Text = cst.name;
-                            cstNode.Tag = cst;
-                            cstNode.ImageIndex = iConstant;
-                            cstNode.SelectedImageIndex = iConstant;
+                            if (cst.name.Contains(textBox1.Text))
+                            {
+                                TreeNode cstNode = new TreeNode();
+                                cstNode.Text = cst.name;
+                                cstNode.Tag = cst;
+                                cstNode.ImageIndex = iConstant;
+                                cstNode.SelectedImageIndex = iConstant;
 
-                            node.Nodes.Add(cstNode);
+                                node.Nodes.Add(cstNode);
+                            }
                         }
                     }
 
@@ -525,18 +568,27 @@ namespace NppModelica
                             utyNode.ImageIndex = iUniontypePublic;
                             utyNode.SelectedImageIndex = iUniontypePublic;
 
+                            bool emptyUty = true;
+
                             foreach (MetaModelica.Record rcd in uty.records.Values)
                             {
-                                TreeNode rcdNode = new TreeNode();
-                                rcdNode.Text = rcd.name;
-                                rcdNode.Tag = rcd;
-                                rcdNode.ImageIndex = iRecordPublic;
-                                rcdNode.SelectedImageIndex = iRecordPublic;
+                                if (uty.name.Contains(textBox1.Text) || rcd.name.Contains(textBox1.Text))
+                                {
+                                    TreeNode rcdNode = new TreeNode();
+                                    rcdNode.Text = rcd.name;
+                                    rcdNode.Tag = rcd;
+                                    rcdNode.ImageIndex = iRecordPublic;
+                                    rcdNode.SelectedImageIndex = iRecordPublic;
 
-                                utyNode.Nodes.Add(rcdNode);
+                                    utyNode.Nodes.Add(rcdNode);
+                                    emptyUty = false;
+                                }
                             }
 
-                            node.Nodes.Add(utyNode);
+                            if (uty.name.Contains(textBox1.Text) || !emptyUty)
+                            {
+                                node.Nodes.Add(utyNode);
+                            }
                         }
                     }
                     if (uniontypeToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
@@ -549,18 +601,26 @@ namespace NppModelica
                             utyNode.ImageIndex = iUniontype;
                             utyNode.SelectedImageIndex = iUniontype;
 
+                            bool emptyUty = true;
+
                             foreach (MetaModelica.Record rcd in uty.records.Values)
                             {
-                                TreeNode rcdNode = new TreeNode();
-                                rcdNode.Text = rcd.name;
-                                rcdNode.Tag = rcd;
-                                rcdNode.ImageIndex = iRecord;
-                                rcdNode.SelectedImageIndex = iRecord;
+                                if (uty.name.Contains(textBox1.Text) || rcd.name.Contains(textBox1.Text))
+                                {
+                                    TreeNode rcdNode = new TreeNode();
+                                    rcdNode.Text = rcd.name;
+                                    rcdNode.Tag = rcd;
+                                    rcdNode.ImageIndex = iRecord;
+                                    rcdNode.SelectedImageIndex = iRecord;
 
-                                utyNode.Nodes.Add(rcdNode);
+                                    utyNode.Nodes.Add(rcdNode);
+                                }
                             }
 
-                            node.Nodes.Add(utyNode);
+                            if (uty.name.Contains(textBox1.Text) || !emptyUty)
+                            {
+                                node.Nodes.Add(utyNode);
+                            }
                         }
                     }
 
@@ -569,9 +629,11 @@ namespace NppModelica
                 }
 
                 treeView1.Sort();
+                treeView1.EndUpdate();
             }
             catch (Exception e)
             {
+                treeView1.EndUpdate();
                 toolStripStatusLabel1.Text = e.Message;
             }
         }
@@ -699,6 +761,11 @@ namespace NppModelica
                 Win32.WritePrivateProfileString("Update", "checkForUpdates", "1", Main.iniFilePath);
                 checkForUpdates();
             }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            updateOutline(false);
         }
     }
 }
