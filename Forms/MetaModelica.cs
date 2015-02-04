@@ -661,8 +661,10 @@ namespace MetaModelica
                 length = i - startIndex;
             }
 
-            public string getGraphvizSource()
+            public string getGraphvizSource(out List<string> unusedProtectedFunctions)
             {
+                Dictionary<string, int> functionStats = new Dictionary<string, int>();
+
                 string dotSource = "digraph G\n";
                 dotSource += "{\n";
                 //dotSource += "  graph [splines=ortho]\n";
@@ -685,6 +687,7 @@ namespace MetaModelica
                 foreach (MetaModelica.Function f in protectedFunctions.Values)
                 {
                     dotSource += "  " + name + "_" + f.name + " [label = \"" + f.name + "\", color=black]\n";
+                    functionStats.Add(f.name, 0);
                 }
                 dotSource += "}\n";
 
@@ -701,7 +704,13 @@ namespace MetaModelica
                             //dotSource += "  " + name + "_" + f.name + " -> " + fc_package + "_" + fc_function + "\n";
                         }
                         else
+                        {
                             dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
+                            if (functionStats.ContainsKey(fc))
+                            {
+                                functionStats[fc] += 1;
+                            }
+                        }
                     }
                 }
                 foreach (MetaModelica.Function f in protectedFunctions.Values)
@@ -716,12 +725,26 @@ namespace MetaModelica
                             //dotSource += "  " + name + "_" + f.name + " -> " + fc_package + "_" + fc_function + "\n";
                         }
                         else
+                        {
                             dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
+                            if (functionStats.ContainsKey(fc))
+                            {
+                                functionStats[fc] += 1;
+                            }
+                        }
                     }
                 }
                 #endregion
 
                 dotSource += "}\n";
+
+                unusedProtectedFunctions = new List<string>();
+                unusedProtectedFunctions.Clear();
+                foreach (String s in functionStats.Keys)
+                {
+                    if (functionStats[s] == 0)
+                        unusedProtectedFunctions.Add(s);
+                }
 
                 return dotSource;
             }

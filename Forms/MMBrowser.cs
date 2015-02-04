@@ -371,7 +371,20 @@ namespace NppModelica
                         // call graph
                         if (callGraphToolStripMenuItem.Checked)
                         {
-                            String dotSource = p.getGraphvizSource();
+                            List<string> unusedFunctions;
+                            String dotSource = p.getGraphvizSource(out unusedFunctions);
+                            if (unusedFunctions.Count > 0)
+                            {
+                                if (unusedFunctions.Count > 1)
+                                    richTextBox1.Text = unusedFunctions.Count + " unused protected functions found:";
+                                else
+                                    richTextBox1.Text = "1 unused protected function found:";
+
+                                foreach (String fnc in unusedFunctions)
+                                    richTextBox1.Text += "\n  - " + fnc;
+                            }
+                            else
+                                richTextBox1.Text = "No unused protected functions found";
 
                             System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
 
