@@ -197,12 +197,12 @@ namespace MetaModelica
                 this.description = "";
 
             // skip type
-            while (i+2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i+1].isIDENT(name) && tokenList[i+2].isSYMBOL(";")))
+            while (i + 2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";")))
                 i++;
 
             if (i + 2 < tokenList.Count && tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";"))
             {
-                i+=3;
+                i += 3;
             }
             else
             {
@@ -270,7 +270,7 @@ namespace MetaModelica
 
             if (i + 2 < tokenList.Count && tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";"))
             {
-                i+=3;
+                i += 3;
             }
             else
             {
@@ -281,513 +281,399 @@ namespace MetaModelica
         }
     }
 
-        public class Function
+    public class Function
+    {
+        public String name;
+        public String description;
+        public Hashtable functionCalls;
+        public Modelica.Parser.Position startPosition;
+
+        public Function(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        //string name, Boolean isPublic, string description, string parent, Modelica.Parser.Position startPosition)
         {
-            public String name;
-            public String description;
-            public Hashtable functionCalls;
-            public Modelica.Parser.Position startPosition;
+            Int32 startIndex = i;
+            this.startPosition = tokenList[i].startPosition;
+            this.functionCalls = new Hashtable();
 
-            public Function(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
-                //string name, Boolean isPublic, string description, string parent, Modelica.Parser.Position startPosition)
+            if (i < tokenList.Count && tokenList[i].isIDENT("function"))
             {
-                Int32 startIndex = i;
-                this.startPosition = tokenList[i].startPosition;
-                this.functionCalls = new Hashtable();
-
-                if (i < tokenList.Count && tokenList[i].isIDENT("function"))
-                {
-                    i++;
-                }
-                else
-                {
-                    throw new Exception("IDENT(\"function\") expected: got " + tokenList[i].ToString());
-                }
-
-                if (i < tokenList.Count && tokenList[i].isIDENT())
-                {
-                    this.name = tokenList[i].value;
-                    i++;
-                }
-                else
-                {
-                    throw new Exception("IDENT expected: got " + tokenList[i].ToString());
-                }
-
-                // HACK to parse "function abc = xyz;"
-                if (i < tokenList.Count && tokenList[i].isSYMBOL("="))
-                {
-                    i++;
-                    while (i < tokenList.Count && !tokenList[i].isSYMBOL(";"))
-                    {
-                        i++;
-                    }
-                    i += 1;
-                }
-                else
-                {
-                    while (i + 2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";")))
-                    {
-                        #region function call
-                        if (i < tokenList.Count - 2 &&
-                                    tokenList[i].isIDENT() &&
-                                    tokenList[i + 1].isSYMBOL(".") &&
-                                    tokenList[i + 2].isIDENT())
-                        {
-                            Boolean exist = functionCalls.Contains(tokenList[i].value + "." + tokenList[i + 2].value);
-
-                            if (exist == false)
-                                functionCalls.Add(tokenList[i].value + "." + tokenList[i + 2].value, null);
-
-                            i += 3;
-                        }
-                        else if (i < tokenList.Count &&
-                            tokenList[i].isIDENT())
-                        {
-                            Boolean exist = functionCalls.Contains(tokenList[i].value);
-
-                            if (exist == false)
-                                functionCalls.Add(tokenList[i].value, null);
-
-                            i++;
-                        }
-                        #endregion
-                        else
-                            i++;
-                    }
-                    i += 3;
-                }
-
-                length = i - startIndex;
+                i++;
+            }
+            else
+            {
+                throw new Exception("IDENT(\"function\") expected: got " + tokenList[i].ToString());
             }
 
-            //public string getGraphvizSource(Scope scope)
-            //{
-            //    string dotSource = "digraph G\n";
-            //    dotSource += "{\n";
-            //    //dotSource += "  graph [splines=ortho]\n";
-            //
-            //    dotSource += "labelloc = \"t\"\n";
-            //    dotSource += "label = \"Call graph of " + parent + "." + name + " \\nGenerated with NppModelica (c) 2013-2015, Lennart Ochel.\\n \"\n";
-            //
-            //
-            //    dotSource += "subgraph cluster_" + parent + "\n";
-            //    dotSource += "{\n";
-            //    dotSource += "  label = \"" + parent + ".mo\"\n";
-            //    dotSource += "  style=filled\n";
-            //    dotSource += "  color=lightgray\n";
-            //    dotSource += "  node [style=filled, fillcolor=white, shape=box]\n\n";
-            //
-            //    dotSource += "  " + name + " [label = \"" + name + "\", color=black]\n";
-            //    foreach (string s in functionCalls.Keys)
-            //        if (!s.Contains(".") && s != name)
-            //            dotSource += "  " + s.Replace('.', '_') + " [label = \"" + s + "\", color=black]\n";
-            //    dotSource += "}\n";
-            //
-            //    Hashtable t = new Hashtable();
-            //    foreach (string s in functionCalls.Keys)
-            //    {
-            //        if (s.Contains("."))
-            //        {
-            //            string fc_package = s.Substring(0, s.IndexOf('.'));
-            //            string fc_function = s.Substring(s.IndexOf('.') + 1);
-            //
-            //            if (scope.packages.Contains(fc_package))
-            //                if (((Package)scope.packages[fc_package]).functions.Contains(fc_function))
-            //                    if (!t.Contains(fc_package))
-            //                    {
-            //                        t.Add(fc_package, null);
-            //
-            //                        dotSource += "subgraph cluster_" + fc_package + "\n";
-            //                        dotSource += "{\n";
-            //                        dotSource += "  label = \"" + fc_package + ".mo\"\n";
-            //                        dotSource += "  style=filled\n";
-            //                        dotSource += "  color=lightgray\n";
-            //                        dotSource += "  node [style=filled, fillcolor=white, shape=box]\n\n";
-            //
-            //                        dotSource += "  " + fc_package + "_" + fc_function + " [label = \"" + fc_function + "\", color=black]\n";
-            //                        foreach (string ss in functionCalls.Keys)
-            //                            if (ss.Contains(fc_package + "."))
-            //                                dotSource += "  " + ss.Replace('.', '_') + " [label = \"" + ss.Substring(ss.IndexOf('.') + 1) + "\", color=black]\n";
-            //                        dotSource += "}\n";
-            //                    }
-            //        }
-            //    }
-            //
-            //    #region Kanten
-            //    foreach (string s in functionCalls.Keys)
-            //    {
-            //        if (s.Contains("."))
-            //        {
-            //            string fc_package = s.Substring(0, s.IndexOf('.'));
-            //            string fc_function = s.Substring(s.IndexOf('.') + 1);
-            //
-            //            if (scope.packages.Contains(fc_package))
-            //                if (((Package)scope.packages[fc_package]).functions.Contains(fc_function))
-            //                    dotSource += "  " + name + " -> " + s.Replace('.', '_') + "\n";
-            //        }
-            //        else
-            //            dotSource += "  " + name + " -> " + s + "\n";
-            //    }
-            //    #endregion
-            //
-            //    dotSource += "}\n";
-            //
-            //    return dotSource;
-            //}
+            if (i < tokenList.Count && tokenList[i].isIDENT())
+            {
+                this.name = tokenList[i].value;
+                i++;
+            }
+            else
+            {
+                throw new Exception("IDENT expected: got " + tokenList[i].ToString());
+            }
+
+            // HACK to parse "function abc = xyz;"
+            if (i < tokenList.Count && tokenList[i].isSYMBOL("="))
+            {
+                i++;
+                while (i < tokenList.Count && !tokenList[i].isSYMBOL(";"))
+                {
+                    i++;
+                }
+                i += 1;
+            }
+            else
+            {
+                while (i + 2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";")))
+                {
+                    #region function call
+                    if (i < tokenList.Count - 2 &&
+                                tokenList[i].isIDENT() &&
+                                tokenList[i + 1].isSYMBOL(".") &&
+                                tokenList[i + 2].isIDENT())
+                    {
+                        Boolean exist = functionCalls.Contains(tokenList[i].value + "." + tokenList[i + 2].value);
+
+                        if (exist == false)
+                            functionCalls.Add(tokenList[i].value + "." + tokenList[i + 2].value, null);
+
+                        i += 3;
+                    }
+                    else if (i < tokenList.Count &&
+                        tokenList[i].isIDENT())
+                    {
+                        Boolean exist = functionCalls.Contains(tokenList[i].value);
+
+                        if (exist == false)
+                            functionCalls.Add(tokenList[i].value, null);
+
+                        i++;
+                    }
+                    #endregion
+                    else
+                        i++;
+                }
+                i += 3;
+            }
+
+            length = i - startIndex;
+        }
+    }
+
+    public class Package
+    {
+        public String name;
+        public Boolean isEncapsulated;
+        public String description;
+        public Modelica.Parser.Position startPosition;
+
+        public Hashtable publicImports;
+        public Hashtable publicConstants;
+        public Hashtable publicTypes;
+        public Hashtable publicRecords;
+        public Hashtable publicUniontypes;
+        public Hashtable publicFunctions;
+        public Hashtable publicPackages;
+
+        public Hashtable protectedImports;
+        public Hashtable protectedConstants;
+        public Hashtable protectedTypes;
+        public Hashtable protectedRecords;
+        public Hashtable protectedUniontypes;
+        public Hashtable protectedFunctions;
+        public Hashtable protectedPackages;
+
+        public Package(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        {
+            Int32 startIndex = i;
+            this.startPosition = tokenList[i].startPosition;
+            Boolean isPublic = true;
+
+            publicImports = new Hashtable();
+            publicConstants = new Hashtable();
+            publicTypes = new Hashtable();
+            publicRecords = new Hashtable();
+            publicUniontypes = new Hashtable();
+            publicFunctions = new Hashtable();
+            publicPackages = new Hashtable();
+
+            protectedImports = new Hashtable();
+            protectedConstants = new Hashtable();
+            protectedTypes = new Hashtable();
+            protectedRecords = new Hashtable();
+            protectedUniontypes = new Hashtable();
+            protectedFunctions = new Hashtable();
+            protectedPackages = new Hashtable();
+
+            if (i < tokenList.Count && tokenList[i].isIDENT("encapsulated"))
+            {
+                isEncapsulated = true;
+                i++;
+            }
+            else
+                isEncapsulated = false;
+
+            if (i < tokenList.Count && tokenList[i].isIDENT("package"))
+                i++;
+            else
+                throw new Exception("expected: IDENT(\"package\"), got: " + tokenList[i].ToString());
+
+            if (i < tokenList.Count && tokenList[i].isIDENT())
+            {
+                name = tokenList[i].value;
+                i++;
+            }
+            else
+                throw new Exception("expected: IDENT, got: " + tokenList[i].ToString());
+
+            if (i < tokenList.Count && tokenList[i].isSTRING())
+            {
+                description = tokenList[i].value;
+                i++;
+            }
+            else
+                description = "";
+
+            while (i + 2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";")))
+            {
+                if (i < tokenList.Count && tokenList[i].isIDENT("public"))
+                {
+                    isPublic = true;
+                    i++;
+                }
+                if (i < tokenList.Count && tokenList[i].isIDENT("protected"))
+                {
+                    isPublic = false;
+                    i++;
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("import"))
+                {
+                    try
+                    {
+                        Import imp = new Import(tokenList, i, out length);
+                        if (isPublic)
+                            publicImports.Add(imp.name, imp);
+                        else
+                            protectedImports.Add(imp.name, imp);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Package: Error in constant: " + e.Message);
+                    }
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("constant"))
+                {
+                    try
+                    {
+                        Constant cst = new Constant(tokenList, i, out length);
+                        if (isPublic)
+                            publicConstants.Add(cst.name, cst);
+                        else
+                            protectedConstants.Add(cst.name, cst);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Package: Error in constant: " + e.Message);
+                    }
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("type"))
+                {
+                    try
+                    {
+                        Type typ = new Type(tokenList, i, out length);
+                        if (isPublic)
+                            publicTypes.Add(typ.name, typ);
+                        else
+                            protectedTypes.Add(typ.name, typ);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Package: Error in type: " + e.Message);
+                    }
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("record"))
+                {
+                    try
+                    {
+                        Record rcd = new Record(tokenList, i, out length);
+                        if (isPublic)
+                            publicRecords.Add(rcd.name, rcd);
+                        else
+                            protectedRecords.Add(rcd.name, rcd);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Scope: Error in record: " + e.Message);
+                    }
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("uniontype"))
+                {
+                    try
+                    {
+                        Uniontype uty = new Uniontype(tokenList, i, out length);
+                        if (isPublic)
+                            publicUniontypes.Add(uty.name, uty);
+                        else
+                            protectedUniontypes.Add(uty.name, uty);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Scope: Error in uniontype: " + e.Message);
+                    }
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("function"))
+                {
+                    try
+                    {
+                        Function fcn = new Function(tokenList, i, out length);
+                        if (isPublic)
+                            publicFunctions.Add(fcn.name, fcn);
+                        else
+                            protectedFunctions.Add(fcn.name, fcn);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Package: Error in function: " + e.Message);
+                    }
+                }
+                else if ((i < tokenList.Count && tokenList[i].isIDENT("package")) ||
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
+                {
+                    try
+                    {
+                        Package pcg = new Package(tokenList, i, out length);
+                        if (isPublic)
+                            publicPackages.Add(pcg.name, pcg);
+                        else
+                            protectedPackages.Add(pcg.name, pcg);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Package: Error in package: " + e.Message);
+                    }
+                }
+                else
+                {
+                    //throw new Exception("Package: Unexpected token: " + tokenList[i].ToString());
+                    i++;
+                }
+            }
+
+            if (i < tokenList.Count && tokenList[i].isIDENT("end"))
+                i++;
+            else
+                throw new Exception("expected: IDENT(\"end\"), got: " + tokenList[i].ToString());
+
+            if (i < tokenList.Count && tokenList[i].isIDENT(name))
+                i++;
+            else
+                throw new Exception("expected: IDENT(\"" + name + "\"), got: " + tokenList[i].ToString());
+
+            if (i < tokenList.Count && tokenList[i].isSYMBOL(";"))
+                i++;
+            else
+                throw new Exception("expected: SYMBOL(\";\"), got: " + tokenList[i].ToString());
+
+            length = i - startIndex;
         }
 
-        public class Package
+        public string getGraphvizSource(out List<string> unusedProtectedFunctions)
         {
-            public String name;
-            public Boolean isEncapsulated;
-            public String description;
-            public Modelica.Parser.Position startPosition;
+            Dictionary<string, int> functionStats = new Dictionary<string, int>();
 
-            public Hashtable publicImports;
-            public Hashtable publicConstants;
-            public Hashtable publicTypes;
-            public Hashtable publicRecords;
-            public Hashtable publicUniontypes;
-            public Hashtable publicFunctions;
-            public Hashtable publicPackages;
+            string dotSource = "digraph G\n";
+            dotSource += "{\n";
+            //dotSource += "  graph [splines=ortho]\n";
 
-            public Hashtable protectedImports;
-            public Hashtable protectedConstants;
-            public Hashtable protectedTypes;
-            public Hashtable protectedRecords;
-            public Hashtable protectedUniontypes;
-            public Hashtable protectedFunctions;
-            public Hashtable protectedPackages;
+            dotSource += "labelloc = \"t\"\n";
+            dotSource += "label = \"Internal call graph of package " + name + " \\nGenerated with NppModelica (c) 2013-2015, Lennart Ochel.\\n \"\n";
 
-            public Package(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+
+            dotSource += "subgraph cluster_" + name + "\n";
+            dotSource += "{\n";
+            dotSource += "  label = \"" + name + ".mo\"\n";
+            dotSource += "  style=filled\n";
+            dotSource += "  color=lightgray\n";
+            dotSource += "  node [style=filled, fillcolor=white, shape=box]\n\n";
+
+            foreach (MetaModelica.Function f in publicFunctions.Values)
             {
-                Int32 startIndex = i;
-                this.startPosition = tokenList[i].startPosition;
-                Boolean isPublic = true;
+                dotSource += "  " + name + "_" + f.name + " [label = \"" + f.name + "\", color=red]\n";
+            }
+            foreach (MetaModelica.Function f in protectedFunctions.Values)
+            {
+                dotSource += "  " + name + "_" + f.name + " [label = \"" + f.name + "\", color=black]\n";
+                functionStats.Add(f.name, 0);
+            }
+            dotSource += "}\n";
 
-                publicImports = new Hashtable();
-                publicConstants = new Hashtable();
-                publicTypes = new Hashtable();
-                publicRecords = new Hashtable();
-                publicUniontypes = new Hashtable();
-                publicFunctions = new Hashtable();
-                publicPackages = new Hashtable();
-
-                protectedImports = new Hashtable();
-                protectedConstants = new Hashtable();
-                protectedTypes = new Hashtable();
-                protectedRecords = new Hashtable();
-                protectedUniontypes = new Hashtable();
-                protectedFunctions = new Hashtable();
-                protectedPackages = new Hashtable();
-
-                if (i < tokenList.Count && tokenList[i].isIDENT("encapsulated"))
+            #region Kanten
+            foreach (MetaModelica.Function f in publicFunctions.Values)
+            {
+                foreach (String fc in f.functionCalls.Keys)
                 {
-                    isEncapsulated = true;
-                    i++;
-                }
-                else
-                    isEncapsulated = false;
+                    if (fc.Contains("."))
+                    {
+                        string fc_package = fc.Substring(0, fc.IndexOf('.'));
+                        string fc_function = fc.Substring(fc.IndexOf('.') + 1);
 
-                if (i < tokenList.Count && tokenList[i].isIDENT("package"))
-                    i++;
-                else
-                    throw new Exception("expected: IDENT(\"package\"), got: " + tokenList[i].ToString());
-
-                if (i < tokenList.Count && tokenList[i].isIDENT())
-                {
-                    name = tokenList[i].value;
-                    i++;
-                }
-                else
-                    throw new Exception("expected: IDENT, got: " + tokenList[i].ToString());
-
-                if (i < tokenList.Count && tokenList[i].isSTRING())
-                {
-                    description = tokenList[i].value;
-                    i++;
-                }
-                else
-                    description = "";
-
-                while (i + 2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i+1].isIDENT(name) && tokenList[i+2].isSYMBOL(";")))
-                {
-                    if (i < tokenList.Count && tokenList[i].isIDENT("public"))
-                    {
-                        isPublic = true;
-                        i++;
-                    }
-                    if (i < tokenList.Count && tokenList[i].isIDENT("protected"))
-                    {
-                        isPublic = false;
-                        i++;
-                    }
-                    else if (i < tokenList.Count && tokenList[i].isIDENT("import"))
-                    {
-                        try
-                        {
-                            Import imp = new Import(tokenList, i, out length);
-                            if (isPublic)
-                                publicImports.Add(imp.name, imp);
-                            else
-                                protectedImports.Add(imp.name, imp);
-                            i += length;
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception("Package: Error in constant: " + e.Message);
-                        }
-                    }
-                    else if (i < tokenList.Count && tokenList[i].isIDENT("constant"))
-                    {
-                        try
-                        {
-                            Constant cst = new Constant(tokenList, i, out length);
-                            if (isPublic)
-                                publicConstants.Add(cst.name, cst);
-                            else
-                                protectedConstants.Add(cst.name, cst);
-                            i += length;
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception("Package: Error in constant: " + e.Message);
-                        }
-                    }
-                    else if (i < tokenList.Count && tokenList[i].isIDENT("type"))
-                    {
-                        try
-                        {
-                            Type typ = new Type(tokenList, i, out length);
-                            if (isPublic)
-                                publicTypes.Add(typ.name, typ);
-                            else
-                                protectedTypes.Add(typ.name, typ);
-                            i += length;
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception("Package: Error in type: " + e.Message);
-                        }
-                    }
-                    else if (i < tokenList.Count && tokenList[i].isIDENT("record"))
-                    {
-                        try
-                        {
-                            Record rcd = new Record(tokenList, i, out length);
-                            if (isPublic)
-                                publicRecords.Add(rcd.name, rcd);
-                            else
-                                protectedRecords.Add(rcd.name, rcd);
-                            i += length;
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception("Scope: Error in record: " + e.Message);
-                        }
-                    }
-                    else if (i < tokenList.Count && tokenList[i].isIDENT("uniontype"))
-                    {
-                        try
-                        {
-                            Uniontype uty = new Uniontype(tokenList, i, out length);
-                            if (isPublic)
-                                publicUniontypes.Add(uty.name, uty);
-                            else
-                                protectedUniontypes.Add(uty.name, uty);
-                            i += length;
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception("Scope: Error in uniontype: " + e.Message);
-                        }
-                    }
-                    else if (i < tokenList.Count && tokenList[i].isIDENT("function"))
-                    {
-                        try
-                        {
-                            Function fcn = new Function(tokenList, i, out length);
-                            if (isPublic)
-                                publicFunctions.Add(fcn.name, fcn);
-                            else
-                                protectedFunctions.Add(fcn.name, fcn);
-                            i += length;
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception("Package: Error in function: " + e.Message);
-                        }
-                    }
-                    else if ((i < tokenList.Count && tokenList[i].isIDENT("package")) ||
-                             (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
-                    {
-                        try
-                        {
-                            Package pcg = new Package(tokenList, i, out length);
-                            if (isPublic)
-                                publicPackages.Add(pcg.name, pcg);
-                            else
-                                protectedPackages.Add(pcg.name, pcg);
-                            i += length;
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception("Package: Error in package: " + e.Message);
-                        }
+                        //dotSource += "  " + name + "_" + f.name + " -> " + fc_package + "_" + fc_function + "\n";
                     }
                     else
                     {
-                        //throw new Exception("Package: Unexpected token: " + tokenList[i].ToString());
-                        i++;
+                        dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
+                        if (functionStats.ContainsKey(fc))
+                        {
+                            functionStats[fc] += 1;
+                        }
                     }
                 }
-
-                if (i < tokenList.Count && tokenList[i].isIDENT("end"))
-                    i++;
-                else
-                    throw new Exception("expected: IDENT(\"end\"), got: " + tokenList[i].ToString());
-
-                if (i < tokenList.Count && tokenList[i].isIDENT(name))
-                    i++;
-                else
-                    throw new Exception("expected: IDENT(\"" + name + "\"), got: " + tokenList[i].ToString());
-
-                if (i < tokenList.Count && tokenList[i].isSYMBOL(";"))
-                    i++;
-                else
-                    throw new Exception("expected: SYMBOL(\";\"), got: " + tokenList[i].ToString());
-
-                length = i - startIndex;
             }
-
-            public string getGraphvizSource(out List<string> unusedProtectedFunctions)
+            foreach (MetaModelica.Function f in protectedFunctions.Values)
             {
-                Dictionary<string, int> functionStats = new Dictionary<string, int>();
-
-                string dotSource = "digraph G\n";
-                dotSource += "{\n";
-                //dotSource += "  graph [splines=ortho]\n";
-
-                dotSource += "labelloc = \"t\"\n";
-                dotSource += "label = \"Internal call graph of package " + name + " \\nGenerated with NppModelica (c) 2013-2015, Lennart Ochel.\\n \"\n";
-
-
-                dotSource += "subgraph cluster_" + name + "\n";
-                dotSource += "{\n";
-                dotSource += "  label = \"" + name + ".mo\"\n";
-                dotSource += "  style=filled\n";
-                dotSource += "  color=lightgray\n";
-                dotSource += "  node [style=filled, fillcolor=white, shape=box]\n\n";
-
-                foreach (MetaModelica.Function f in publicFunctions.Values)
+                foreach (String fc in f.functionCalls.Keys)
                 {
-                    dotSource += "  " + name + "_" + f.name + " [label = \"" + f.name + "\", color=red]\n";
-                }
-                foreach (MetaModelica.Function f in protectedFunctions.Values)
-                {
-                    dotSource += "  " + name + "_" + f.name + " [label = \"" + f.name + "\", color=black]\n";
-                    functionStats.Add(f.name, 0);
-                }
-                dotSource += "}\n";
-
-                #region Kanten
-                foreach (MetaModelica.Function f in publicFunctions.Values)
-                {
-                    foreach (String fc in f.functionCalls.Keys)
+                    if (fc.Contains("."))
                     {
-                        if (fc.Contains("."))
-                        {
-                            string fc_package = fc.Substring(0, fc.IndexOf('.'));
-                            string fc_function = fc.Substring(fc.IndexOf('.') + 1);
+                        string fc_package = fc.Substring(0, fc.IndexOf('.'));
+                        string fc_function = fc.Substring(fc.IndexOf('.') + 1);
 
-                            //dotSource += "  " + name + "_" + f.name + " -> " + fc_package + "_" + fc_function + "\n";
-                        }
-                        else
+                        //dotSource += "  " + name + "_" + f.name + " -> " + fc_package + "_" + fc_function + "\n";
+                    }
+                    else
+                    {
+                        dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
+                        if (functionStats.ContainsKey(fc))
                         {
-                            dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
-                            if (functionStats.ContainsKey(fc))
-                            {
-                                functionStats[fc] += 1;
-                            }
+                            functionStats[fc] += 1;
                         }
                     }
                 }
-                foreach (MetaModelica.Function f in protectedFunctions.Values)
-                {
-                    foreach (String fc in f.functionCalls.Keys)
-                    {
-                        if (fc.Contains("."))
-                        {
-                            string fc_package = fc.Substring(0, fc.IndexOf('.'));
-                            string fc_function = fc.Substring(fc.IndexOf('.') + 1);
+            }
+            #endregion
 
-                            //dotSource += "  " + name + "_" + f.name + " -> " + fc_package + "_" + fc_function + "\n";
-                        }
-                        else
-                        {
-                            dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
-                            if (functionStats.ContainsKey(fc))
-                            {
-                                functionStats[fc] += 1;
-                            }
-                        }
-                    }
-                }
-                #endregion
+            dotSource += "}\n";
 
-                dotSource += "}\n";
-
-                unusedProtectedFunctions = new List<string>();
-                unusedProtectedFunctions.Clear();
-                foreach (String s in functionStats.Keys)
-                {
-                    if (functionStats[s] == 0)
-                        unusedProtectedFunctions.Add(s);
-                }
-
-                return dotSource;
+            unusedProtectedFunctions = new List<string>();
+            unusedProtectedFunctions.Clear();
+            foreach (String s in functionStats.Keys)
+            {
+                if (functionStats[s] == 0)
+                    unusedProtectedFunctions.Add(s);
             }
 
-            //public string getImportGraphvizSource()
-            //{
-            //    string dotSource = "digraph G\n";
-            //    dotSource += "{\n";
-            //    //dotSource += "  graph [splines=ortho]\n";
-            //
-            //    dotSource += "labelloc = \"t\"\n";
-            //    dotSource += "label = \"Import graph of " + name + " \\nGenerated with MetaModelica Viewer (c) 2013, Lennart Ochel.\\n \"\n";
-            //
-            //
-            //    //dotSource += "subgraph cluster_" + name + "\n";
-            //    //dotSource += "{\n";
-            //    //dotSource += "  label = \"" + name + ".mo\"\n";
-            //    //dotSource += "  style=filled\n";
-            //    //dotSource += "  color=lightgray\n";
-            //    //dotSource += "  node [style=filled, fillcolor=white, shape=box]\n\n";
-            //    dotSource += "  " + name + " [label = \"" + name + "\", color=red]\n";
-            //
-            //    foreach (MetaModelica.Import import in imports.Values)
-            //    {
-            //        if (import.isPublic)
-            //            dotSource += "  " + import.value + " [label = \"" + import.value + "\", color=red]\n";
-            //        else
-            //            dotSource += "  " + import.value + " [label = \"" + import.value + "\", color=black]\n";
-            //    }
-            //    //dotSource += "}\n";
-            //
-            //    #region Kanten
-            //    foreach (MetaModelica.Import import in imports.Values)
-            //    {
-            //        dotSource += "  " + name + " -> " + import.value + "\n";
-            //    }
-            //    #endregion
-            //
-            //    dotSource += "}\n";
-            //
-            //    return dotSource;
-            //}
+            return dotSource;
         }
+    }
 
     public class Scope
     {
@@ -872,7 +758,7 @@ namespace MetaModelica
                     throw new Exception("function");
                 }
                 else if ((i < tokenList.Count && tokenList[i].isIDENT("package")) ||
-                         (i+1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
                 {
                     try
                     {
@@ -912,7 +798,7 @@ namespace MetaModelica
                     }
                     while (b);
                 }
-            
+
                 foreach (Function f in p.protectedFunctions.Values)
                 {
                     bool b;
