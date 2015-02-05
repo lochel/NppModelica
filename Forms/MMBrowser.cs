@@ -296,7 +296,7 @@ namespace NppModelica
                 {
                     foreach (MetaModelica.Constant cst in scope.constants.Values)
                     {
-                        if (cst.name.Contains(textBox1.Text))
+                        if (cst.name.ToLower().Contains(textBox1.Text.ToLower()))
                         {
                             TreeNode cstNode = new TreeNode();
                             cstNode.Text = cst.name;
@@ -313,7 +313,7 @@ namespace NppModelica
                 {
                     foreach (MetaModelica.Type typ in scope.types.Values)
                     {
-                        if (typ.name.Contains(textBox1.Text))
+                        if (typ.name.ToLower().Contains(textBox1.Text.ToLower()))
                         {
                             TreeNode typNode = new TreeNode();
                             typNode.Text = typ.name;
@@ -330,7 +330,7 @@ namespace NppModelica
                 {
                     foreach (MetaModelica.Record rcd in scope.records.Values)
                     {
-                        if (rcd.name.Contains(textBox1.Text))
+                        if (rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
                         {
                             TreeNode rcdNode = new TreeNode();
                             rcdNode.Text = rcd.name;
@@ -356,7 +356,7 @@ namespace NppModelica
                         bool emptyUty = true;
                         foreach (MetaModelica.Record rcd in uty.records.Values)
                         {
-                            if (uty.name.Contains(textBox1.Text) || rcd.name.Contains(textBox1.Text))
+                            if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode rcdNode = new TreeNode();
                                 rcdNode.Text = rcd.name;
@@ -369,7 +369,7 @@ namespace NppModelica
                             }
                         }
 
-                        if (uty.name.Contains(textBox1.Text) || !emptyUty)
+                        if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || !emptyUty)
                         {
                             treeView1.Nodes.Add(utyNode);
                         }
@@ -430,7 +430,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Function fcn in p.publicFunctions.Values)
                         {
-                            if (fcn.name.Contains(textBox1.Text))
+                            if (fcn.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode fcnNode = new TreeNode();
                                 fcnNode.Text = fcn.name;
@@ -446,7 +446,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Function fcn in p.protectedFunctions.Values)
                         {
-                            if (fcn.name.Contains(textBox1.Text))
+                            if (fcn.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode fcnNode = new TreeNode();
                                 fcnNode.Text = fcn.name;
@@ -463,7 +463,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Type typ in p.publicTypes.Values)
                         {
-                            if (typ.name.Contains(textBox1.Text))
+                            if (typ.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode typNode = new TreeNode();
                                 typNode.Text = typ.name;
@@ -479,7 +479,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Type typ in p.protectedTypes.Values)
                         {
-                            if (typ.name.Contains(textBox1.Text))
+                            if (typ.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode typNode = new TreeNode();
                                 typNode.Text = typ.name;
@@ -496,7 +496,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Record rcd in p.publicRecords.Values)
                         {
-                            if (rcd.name.Contains(textBox1.Text))
+                            if (rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode rcdNode = new TreeNode();
                                 rcdNode.Text = rcd.name;
@@ -512,7 +512,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Record rcd in p.protectedRecords.Values)
                         {
-                            if (rcd.name.Contains(textBox1.Text))
+                            if (rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode rcdNode = new TreeNode();
                                 rcdNode.Text = rcd.name;
@@ -529,7 +529,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Constant cst in p.publicConstants.Values)
                         {
-                            if (cst.name.Contains(textBox1.Text))
+                            if (cst.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode cstNode = new TreeNode();
                                 cstNode.Text = cst.name;
@@ -545,7 +545,7 @@ namespace NppModelica
                     {
                         foreach (MetaModelica.Constant cst in p.protectedConstants.Values)
                         {
-                            if (cst.name.Contains(textBox1.Text))
+                            if (cst.name.ToLower().Contains(textBox1.Text.ToLower()))
                             {
                                 TreeNode cstNode = new TreeNode();
                                 cstNode.Text = cst.name;
@@ -572,7 +572,7 @@ namespace NppModelica
 
                             foreach (MetaModelica.Record rcd in uty.records.Values)
                             {
-                                if (uty.name.Contains(textBox1.Text) || rcd.name.Contains(textBox1.Text))
+                                if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
                                 {
                                     TreeNode rcdNode = new TreeNode();
                                     rcdNode.Text = rcd.name;
@@ -585,7 +585,7 @@ namespace NppModelica
                                 }
                             }
 
-                            if (uty.name.Contains(textBox1.Text) || !emptyUty)
+                            if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || !emptyUty)
                             {
                                 node.Nodes.Add(utyNode);
                             }
@@ -605,7 +605,7 @@ namespace NppModelica
 
                             foreach (MetaModelica.Record rcd in uty.records.Values)
                             {
-                                if (uty.name.Contains(textBox1.Text) || rcd.name.Contains(textBox1.Text))
+                                if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
                                 {
                                     TreeNode rcdNode = new TreeNode();
                                     rcdNode.Text = rcd.name;
@@ -617,7 +617,7 @@ namespace NppModelica
                                 }
                             }
 
-                            if (uty.name.Contains(textBox1.Text) || !emptyUty)
+                            if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || !emptyUty)
                             {
                                 node.Nodes.Add(utyNode);
                             }
@@ -766,6 +766,11 @@ namespace NppModelica
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             updateOutline(false);
+        }
+
+        private void latestReleaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/lochel/NppModelica/releases/latest");
         }
     }
 }

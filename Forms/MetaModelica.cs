@@ -368,7 +368,7 @@ namespace MetaModelica
             //    //dotSource += "  graph [splines=ortho]\n";
             //
             //    dotSource += "labelloc = \"t\"\n";
-            //    dotSource += "label = \"Call graph of " + parent + "." + name + " \\nGenerated with NppModelica (c) 2013-2014, Lennart Ochel.\\n \"\n";
+            //    dotSource += "label = \"Call graph of " + parent + "." + name + " \\nGenerated with NppModelica (c) 2013-2015, Lennart Ochel.\\n \"\n";
             //
             //
             //    dotSource += "subgraph cluster_" + parent + "\n";
@@ -670,7 +670,7 @@ namespace MetaModelica
                 //dotSource += "  graph [splines=ortho]\n";
 
                 dotSource += "labelloc = \"t\"\n";
-                dotSource += "label = \"Internal call graph of package " + name + " \\nGenerated with NppModelica (c) 2013-2014, Lennart Ochel.\\n \"\n";
+                dotSource += "label = \"Internal call graph of package " + name + " \\nGenerated with NppModelica (c) 2013-2015, Lennart Ochel.\\n \"\n";
 
 
                 dotSource += "subgraph cluster_" + name + "\n";
