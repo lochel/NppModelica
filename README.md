@@ -4,8 +4,8 @@ NppModelica
 NppModelica is a plugin for Notepad++ that provides an outline and call graph for MetaModelica source files.
 
 ## Download binaries
-* [Latest release (v0.2.1)](../../releases/tag/v0.2.1)
-* [Other versions](https://dev.openmodelica.org/~lochel/NppModelica/)
+* [Latest release (v0.2.2)](../../releases/tag/v0.2.2)
+* [v0.2.1](../../releases/tag/v0.2.1)
 
 ## Setup
 * Start Notepad++ and click "Settings" -> "Import" -> "Import plugin(s)…".
