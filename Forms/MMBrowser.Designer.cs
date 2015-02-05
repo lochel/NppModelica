@@ -32,9 +32,6 @@
             this.changeWorkspaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tstbGraphvizPath = new System.Windows.Forms.ToolStripTextBox();
             this.sETTINGSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tstbUpdatePath = new System.Windows.Forms.ToolStripTextBox();
-            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.consoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -100,35 +97,10 @@
             // sETTINGSToolStripMenuItem
             // 
             this.sETTINGSToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.changeWorkspaceToolStripMenuItem,
-            this.updatesToolStripMenuItem});
+            this.changeWorkspaceToolStripMenuItem});
             this.sETTINGSToolStripMenuItem.Name = "sETTINGSToolStripMenuItem";
             this.sETTINGSToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
             this.sETTINGSToolStripMenuItem.Text = "SETTINGS";
-            // 
-            // updatesToolStripMenuItem
-            // 
-            this.updatesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tstbUpdatePath,
-            this.checkForUpdatesToolStripMenuItem});
-            this.updatesToolStripMenuItem.Name = "updatesToolStripMenuItem";
-            this.updatesToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
-            this.updatesToolStripMenuItem.Text = "Updates";
-            // 
-            // tstbUpdatePath
-            // 
-            this.tstbUpdatePath.Name = "tstbUpdatePath";
-            this.tstbUpdatePath.Size = new System.Drawing.Size(300, 23);
-            this.tstbUpdatePath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tstbUpdatePath_KeyDown);
-            this.tstbUpdatePath.TextChanged += new System.EventHandler(this.tstbUpdatePath_TextChanged);
-            // 
-            // checkForUpdatesToolStripMenuItem
-            // 
-            this.checkForUpdatesToolStripMenuItem.CheckOnClick = true;
-            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(360, 22);
-            this.checkForUpdatesToolStripMenuItem.Text = "Check for Updates";
-            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
             // 
             // consoleToolStripMenuItem
             // 
@@ -140,7 +112,9 @@
             // 
             // searchToolStripMenuItem
             // 
+            this.searchToolStripMenuItem.Checked = true;
             this.searchToolStripMenuItem.CheckOnClick = true;
+            this.searchToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
             this.searchToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
             this.searchToolStripMenuItem.Text = "Search";
@@ -456,9 +430,6 @@
         private System.Windows.Forms.ToolStripMenuItem callGraphViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem publicOnlyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem updatesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripTextBox tstbUpdatePath;
-        private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem latestReleaseToolStripMenuItem;
 
     }

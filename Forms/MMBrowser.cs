@@ -78,45 +78,12 @@ namespace NppModelica
             uniontypeToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "uniontype", 1, Main.iniFilePath) != 0);
             functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "function", 1, Main.iniFilePath) != 0);
 
-            StringBuilder sbBuffer = new StringBuilder(Win32.MAX_PATH);
-            Win32.GetPrivateProfileString("Update", "path", "http://dev.openmodelica.org/~lochel/NppModelica/", sbBuffer, Win32.MAX_PATH, Main.iniFilePath);
-            tstbUpdatePath.Text = sbBuffer.ToString();
-            checkForUpdatesToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("Update", "checkForUpdates", 0, Main.iniFilePath) != 0);
-            checkForUpdates();
-
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
 
             Main.initialized = true;
 
             updateOutline(true);
-        }
-
-        private void checkForUpdates()
-        {
-            if (checkForUpdatesToolStripMenuItem.Checked)
-            {
-                try
-                {
-                    using (System.Net.WebClient wc = new System.Net.WebClient())
-                    {
-                        String currVersion = wc.DownloadString(tstbUpdatePath.Text + "/version");
-
-                        if (Main.PluginVersionNumber != currVersion)
-                        {
-                            if (MessageBox.Show("This is " + Main.PluginName + " version " + Main.PluginVersion + ". The latest version is " + currVersion + ".\n\nDo you want to download the latest version?", Main.PluginName, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.Yes)
-                                Process.Start(tstbUpdatePath.Text);
-                        }
-                    }
-                }
-                catch
-                {
-                    checkForUpdatesToolStripMenuItem.Checked = false;
-                    Win32.WritePrivateProfileString("Update", "checkForUpdates", "0", Main.iniFilePath);
-
-                    MessageBox.Show("It was not possible to check for updates.", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
         }
         
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -740,27 +707,6 @@ namespace NppModelica
         {
             Win32.WritePrivateProfileString("General", "record", recordToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             updateOutline(false);
-        }
-
-        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Win32.WritePrivateProfileString("Update", "checkForUpdates", checkForUpdatesToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
-            checkForUpdates();
-        }
-
-        private void tstbUpdatePath_TextChanged(object sender, EventArgs e)
-        {
-            Win32.WritePrivateProfileString("Update", "path", tstbUpdatePath.Text, Main.iniFilePath);
-        }
-
-        private void tstbUpdatePath_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Return)
-            {
-                checkForUpdatesToolStripMenuItem.Checked = true;
-                Win32.WritePrivateProfileString("Update", "checkForUpdates", "1", Main.iniFilePath);
-                checkForUpdates();
-            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
