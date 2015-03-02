@@ -213,6 +213,9 @@ namespace NppModelica
 
             treeView1.Nodes.Clear();
 
+            richTextBox1.Text = "";
+            toolStripStatusLabel1.Text = "";
+
             fullfilename = System.IO.Path.Combine(currentDirectory.ToString(), filename.ToString());
             if (System.IO.File.Exists(fullfilename) == false)
                 return;
@@ -222,8 +225,6 @@ namespace NppModelica
 
             try
             {
-                richTextBox1.Text = "";
-
                 if (parseSource)
                 {
                     source = getText();
@@ -251,7 +252,6 @@ namespace NppModelica
             }
 
             treeView1.BeginUpdate();
-            treeView1.Nodes.Clear();
             treeView1.Nodes.AddRange(scope.getTreeNodes(constantToolStripMenuItem.Checked, typesToolStripMenuItem.Checked, recordToolStripMenuItem.Checked, uniontypeToolStripMenuItem.Checked, functionToolStripMenuItem.Checked, publicOnlyToolStripMenuItem.Checked, textBox1.Text));
             treeView1.Sort();
             treeView1.EndUpdate();
