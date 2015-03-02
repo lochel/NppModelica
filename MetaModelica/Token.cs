@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Modelica
+namespace MetaModelica
 {
     namespace Parser
     {

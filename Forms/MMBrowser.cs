@@ -14,7 +14,7 @@ namespace NppModelica
         public String fullfilename = "";
         public String source = "";
         public MetaModelica.Scope scope = null;
-        public Modelica.Parser.Lexer lexer = null;
+        public MetaModelica.Parser.Lexer lexer = null;
 
         public String dataPath = "";
         
@@ -229,7 +229,7 @@ namespace NppModelica
                     source = getText();
 
                     scope = new MetaModelica.Scope();
-                    lexer = new Modelica.Parser.Lexer(source, Modelica.Parser.Version.MetaModelica, true);
+                    lexer = new MetaModelica.Parser.Lexer(source, MetaModelica.Parser.Version.MetaModelica, true);
 
                     try
                     {

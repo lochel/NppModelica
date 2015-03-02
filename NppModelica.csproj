@@ -41,15 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExport\DllExportAttribute.cs" />
-    <Compile Include="Forms\MetaModelica.cs" />
+    <Compile Include="MetaModelica\MetaModelica.cs" />
     <Compile Include="Forms\MMBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\MMBrowser.designer.cs">
       <DependentUpon>MMBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Lexer\Lexer.cs" />
-    <Compile Include="Lexer\Token.cs" />
+    <Compile Include="MetaModelica\Lexer.cs" />
+    <Compile Include="MetaModelica\Token.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="NppPluginNETBase.cs" />
     <Compile Include="NppPluginNETHelper.cs" />

@@ -1,5 +1,4 @@
-﻿using Modelica;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -10,9 +9,9 @@ namespace MetaModelica
     public class Import
     {
         public String name;
-        public Modelica.Parser.Position startPosition;
+        public Parser.Position startPosition;
 
-        public Import(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        public Import(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
@@ -59,9 +58,9 @@ namespace MetaModelica
     public class Constant
     {
         public String name;
-        public Modelica.Parser.Position startPosition;
+        public Parser.Position startPosition;
 
-        public Constant(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        public Constant(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
@@ -113,9 +112,9 @@ namespace MetaModelica
     public class Type
     {
         public String name;
-        public Modelica.Parser.Position startPosition;
+        public Parser.Position startPosition;
 
-        public Type(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        public Type(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
@@ -162,10 +161,10 @@ namespace MetaModelica
     public class Record
     {
         public String name;
-        public Modelica.Parser.Position startPosition;
+        public Parser.Position startPosition;
         public String description;
 
-        public Record(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        public Record(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
@@ -217,11 +216,11 @@ namespace MetaModelica
     public class Uniontype
     {
         public string name;
-        public Modelica.Parser.Position startPosition;
+        public Parser.Position startPosition;
         public Hashtable records;
         public String description;
 
-        public Uniontype(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        public Uniontype(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
@@ -287,10 +286,10 @@ namespace MetaModelica
         public String name;
         public String description;
         public Hashtable functionCalls;
-        public Modelica.Parser.Position startPosition;
+        public Parser.Position startPosition;
 
-        public Function(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
-        //string name, Boolean isPublic, string description, string parent, Modelica.Parser.Position startPosition)
+        public Function(List<Parser.Token> tokenList, Int32 i, out Int32 length)
+        //string name, Boolean isPublic, string description, string parent, Parser.Position startPosition)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
@@ -368,7 +367,7 @@ namespace MetaModelica
         public String name;
         public Boolean isEncapsulated;
         public String description;
-        public Modelica.Parser.Position startPosition;
+        public Parser.Position startPosition;
 
         public Hashtable publicImports;
         public Hashtable publicConstants;
@@ -386,7 +385,7 @@ namespace MetaModelica
         public Hashtable protectedFunctions;
         public Hashtable protectedPackages;
 
-        public Package(List<Modelica.Parser.Token> tokenList, Int32 i, out Int32 length)
+        public Package(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
@@ -708,7 +707,7 @@ namespace MetaModelica
             packages = new Hashtable();
         }
 
-        public void loadSource(List<Modelica.Parser.Token> tokenList)
+        public void loadSource(List<Parser.Token> tokenList)
         {
             int i = 0;
             int count = 0;

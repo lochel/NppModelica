@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Modelica
+namespace MetaModelica
 {
     namespace Parser
     {
