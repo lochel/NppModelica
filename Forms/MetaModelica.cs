@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Forms;
 
 namespace MetaModelica
 {
@@ -684,6 +685,19 @@ namespace MetaModelica
         public Hashtable functions;
         public Hashtable packages;
 
+        protected const Int32 iPackage = 0;
+        protected const Int32 iPackagePublic = 1;
+        protected const Int32 iFunction = 2;
+        protected const Int32 iFunctionPublic = 3;
+        protected const Int32 iUniontype = 4;
+        protected const Int32 iUniontypePublic = 5;
+        protected const Int32 iConstant = 6;
+        protected const Int32 iConstantPublic = 7;
+        protected const Int32 iType = 8;
+        protected const Int32 iTypePublic = 9;
+        protected const Int32 iRecord = 10;
+        protected const Int32 iRecordPublic = 11;
+
         public Scope()
         {
             constants = new Hashtable();
@@ -819,6 +833,309 @@ namespace MetaModelica
                 }
             }
             #endregion
+        }
+
+        public TreeNode[] getTreeNodes(Boolean showConstants, Boolean showTypes, Boolean showRecords, Boolean showUniontypes, Boolean showFunctions, Boolean showPublicOnly, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            if (showConstants)
+            {
+                foreach (MetaModelica.Constant cst in constants.Values)
+                {
+                    if (cst.name.ToLower().Contains(filter))
+                    {
+                        TreeNode cstNode = new TreeNode();
+                        cstNode.Text = cst.name;
+                        cstNode.Tag = cst;
+                        cstNode.ImageIndex = iConstantPublic;
+                        cstNode.SelectedImageIndex = iConstantPublic;
+
+                        nodes.Add(cstNode);
+                    }
+                }
+            }
+
+            if (showTypes)
+            {
+                foreach (MetaModelica.Type typ in types.Values)
+                {
+                    if (typ.name.ToLower().Contains(filter))
+                    {
+                        TreeNode typNode = new TreeNode();
+                        typNode.Text = typ.name;
+                        typNode.Tag = typ;
+                        typNode.ImageIndex = iTypePublic;
+                        typNode.SelectedImageIndex = iTypePublic;
+
+                        nodes.Add(typNode);
+                    }
+                }
+            }
+
+            if (showRecords)
+            {
+                foreach (MetaModelica.Record rcd in records.Values)
+                {
+                    if (rcd.name.ToLower().Contains(filter))
+                    {
+                        TreeNode rcdNode = new TreeNode();
+                        rcdNode.Text = rcd.name;
+                        rcdNode.Tag = rcd;
+                        rcdNode.ImageIndex = iRecordPublic;
+                        rcdNode.SelectedImageIndex = iRecordPublic;
+
+                        nodes.Add(rcdNode);
+                    }
+                }
+            }
+
+            if (showUniontypes)
+            {
+                foreach (MetaModelica.Uniontype uty in uniontypes.Values)
+                {
+                    TreeNode utyNode = new TreeNode();
+                    utyNode.Text = uty.name;
+                    utyNode.Tag = uty;
+                    utyNode.ImageIndex = iUniontypePublic;
+                    utyNode.SelectedImageIndex = iUniontypePublic;
+
+                    bool emptyUty = true;
+                    foreach (MetaModelica.Record rcd in uty.records.Values)
+                    {
+                        if (uty.name.ToLower().Contains(filter) || rcd.name.ToLower().Contains(filter))
+                        {
+                            TreeNode rcdNode = new TreeNode();
+                            rcdNode.Text = rcd.name;
+                            rcdNode.Tag = rcd;
+                            rcdNode.ImageIndex = iRecordPublic;
+                            rcdNode.SelectedImageIndex = iRecordPublic;
+
+                            utyNode.Nodes.Add(rcdNode);
+                            emptyUty = false;
+                        }
+                    }
+
+                    if (uty.name.ToLower().Contains(filter) || !emptyUty)
+                    {
+                        nodes.Add(utyNode);
+                    }
+                }
+            }
+
+            foreach (MetaModelica.Package p in packages.Values)
+            {
+                TreeNode node = new TreeNode();
+                node.Name = p.name;
+                node.Text = p.name;
+                node.Tag = p;
+                node.ImageIndex = iPackagePublic;
+                node.SelectedImageIndex = iPackagePublic;
+
+                if (showFunctions)
+                {
+                    foreach (MetaModelica.Function fcn in p.publicFunctions.Values)
+                    {
+                        if (fcn.name.ToLower().Contains(filter))
+                        {
+                            TreeNode fcnNode = new TreeNode();
+                            fcnNode.Text = fcn.name;
+                            fcnNode.Tag = fcn;
+                            fcnNode.ImageIndex = iFunctionPublic;
+                            fcnNode.SelectedImageIndex = iFunctionPublic;
+
+                            node.Nodes.Add(fcnNode);
+                        }
+                    }
+                }
+                if (showFunctions && !showPublicOnly)
+                {
+                    foreach (MetaModelica.Function fcn in p.protectedFunctions.Values)
+                    {
+                        if (fcn.name.ToLower().Contains(filter))
+                        {
+                            TreeNode fcnNode = new TreeNode();
+                            fcnNode.Text = fcn.name;
+                            fcnNode.Tag = fcn;
+                            fcnNode.ImageIndex = iFunction;
+                            fcnNode.SelectedImageIndex = iFunction;
+
+                            node.Nodes.Add(fcnNode);
+                        }
+                    }
+                }
+
+                if (showTypes)
+                {
+                    foreach (MetaModelica.Type typ in p.publicTypes.Values)
+                    {
+                        if (typ.name.ToLower().Contains(filter))
+                        {
+                            TreeNode typNode = new TreeNode();
+                            typNode.Text = typ.name;
+                            typNode.Tag = typ;
+                            typNode.ImageIndex = iTypePublic;
+                            typNode.SelectedImageIndex = iTypePublic;
+
+                            node.Nodes.Add(typNode);
+                        }
+                    }
+                }
+                if (showFunctions && !showPublicOnly)
+                {
+                    foreach (MetaModelica.Type typ in p.protectedTypes.Values)
+                    {
+                        if (typ.name.ToLower().Contains(filter))
+                        {
+                            TreeNode typNode = new TreeNode();
+                            typNode.Text = typ.name;
+                            typNode.Tag = typ;
+                            typNode.ImageIndex = iType;
+                            typNode.SelectedImageIndex = iType;
+
+                            node.Nodes.Add(typNode);
+                        }
+                    }
+                }
+
+                if (showRecords)
+                {
+                    foreach (MetaModelica.Record rcd in p.publicRecords.Values)
+                    {
+                        if (rcd.name.ToLower().Contains(filter))
+                        {
+                            TreeNode rcdNode = new TreeNode();
+                            rcdNode.Text = rcd.name;
+                            rcdNode.Tag = rcd;
+                            rcdNode.ImageIndex = iRecordPublic;
+                            rcdNode.SelectedImageIndex = iRecordPublic;
+
+                            node.Nodes.Add(rcdNode);
+                        }
+                    }
+                }
+                if (showRecords && !showPublicOnly)
+                {
+                    foreach (MetaModelica.Record rcd in p.protectedRecords.Values)
+                    {
+                        if (rcd.name.ToLower().Contains(filter))
+                        {
+                            TreeNode rcdNode = new TreeNode();
+                            rcdNode.Text = rcd.name;
+                            rcdNode.Tag = rcd;
+                            rcdNode.ImageIndex = iRecord;
+                            rcdNode.SelectedImageIndex = iRecord;
+
+                            node.Nodes.Add(rcdNode);
+                        }
+                    }
+                }
+
+                if (showConstants)
+                {
+                    foreach (MetaModelica.Constant cst in p.publicConstants.Values)
+                    {
+                        if (cst.name.ToLower().Contains(filter))
+                        {
+                            TreeNode cstNode = new TreeNode();
+                            cstNode.Text = cst.name;
+                            cstNode.Tag = cst;
+                            cstNode.ImageIndex = iConstantPublic;
+                            cstNode.SelectedImageIndex = iConstantPublic;
+
+                            node.Nodes.Add(cstNode);
+                        }
+                    }
+                }
+                if (showConstants && !showPublicOnly)
+                {
+                    foreach (MetaModelica.Constant cst in p.protectedConstants.Values)
+                    {
+                        if (cst.name.ToLower().Contains(filter))
+                        {
+                            TreeNode cstNode = new TreeNode();
+                            cstNode.Text = cst.name;
+                            cstNode.Tag = cst;
+                            cstNode.ImageIndex = iConstant;
+                            cstNode.SelectedImageIndex = iConstant;
+
+                            node.Nodes.Add(cstNode);
+                        }
+                    }
+                }
+
+                if (showUniontypes)
+                {
+                    foreach (MetaModelica.Uniontype uty in p.publicUniontypes.Values)
+                    {
+                        TreeNode utyNode = new TreeNode();
+                        utyNode.Text = uty.name;
+                        utyNode.Tag = uty;
+                        utyNode.ImageIndex = iUniontypePublic;
+                        utyNode.SelectedImageIndex = iUniontypePublic;
+
+                        bool emptyUty = true;
+
+                        foreach (MetaModelica.Record rcd in uty.records.Values)
+                        {
+                            if (uty.name.ToLower().Contains(filter) || rcd.name.ToLower().Contains(filter))
+                            {
+                                TreeNode rcdNode = new TreeNode();
+                                rcdNode.Text = rcd.name;
+                                rcdNode.Tag = rcd;
+                                rcdNode.ImageIndex = iRecordPublic;
+                                rcdNode.SelectedImageIndex = iRecordPublic;
+
+                                utyNode.Nodes.Add(rcdNode);
+                                emptyUty = false;
+                            }
+                        }
+
+                        if (uty.name.ToLower().Contains(filter) || !emptyUty)
+                        {
+                            node.Nodes.Add(utyNode);
+                        }
+                    }
+                }
+                if (showUniontypes && !showPublicOnly)
+                {
+                    foreach (MetaModelica.Uniontype uty in p.protectedUniontypes.Values)
+                    {
+                        TreeNode utyNode = new TreeNode();
+                        utyNode.Text = uty.name;
+                        utyNode.Tag = uty;
+                        utyNode.ImageIndex = iUniontype;
+                        utyNode.SelectedImageIndex = iUniontype;
+
+                        bool emptyUty = true;
+
+                        foreach (MetaModelica.Record rcd in uty.records.Values)
+                        {
+                            if (uty.name.ToLower().Contains(filter) || rcd.name.ToLower().Contains(filter))
+                            {
+                                TreeNode rcdNode = new TreeNode();
+                                rcdNode.Text = rcd.name;
+                                rcdNode.Tag = rcd;
+                                rcdNode.ImageIndex = iRecord;
+                                rcdNode.SelectedImageIndex = iRecord;
+
+                                utyNode.Nodes.Add(rcdNode);
+                            }
+                        }
+
+                        if (uty.name.ToLower().Contains(filter) || !emptyUty)
+                        {
+                            node.Nodes.Add(utyNode);
+                        }
+                    }
+                }
+
+                node.Expand();
+                nodes.Add(node);
+            }
+
+            return nodes.ToArray();
         }
     }
 }

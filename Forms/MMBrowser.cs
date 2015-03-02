@@ -17,19 +17,6 @@ namespace NppModelica
         public Modelica.Parser.Lexer lexer = null;
 
         public String dataPath = "";
-
-        protected const Int32 iPackage = 0;
-        protected const Int32 iPackagePublic = 1;
-        protected const Int32 iFunction = 2;
-        protected const Int32 iFunctionPublic = 3;
-        protected const Int32 iUniontype = 4;
-        protected const Int32 iUniontypePublic = 5;
-        protected const Int32 iConstant = 6;
-        protected const Int32 iConstantPublic = 7;
-        protected const Int32 iType = 8;
-        protected const Int32 iTypePublic = 9;
-        protected const Int32 iRecord = 10;
-        protected const Int32 iRecordPublic = 11;
         
         public MMBrowser()
         {
@@ -233,8 +220,6 @@ namespace NppModelica
             if (fullfilename.Substring(fullfilename.Length - 3) != ".mo")
                 return;
 
-            treeView1.BeginUpdate();
-
             try
             {
                 richTextBox1.Text = "";
@@ -258,350 +243,59 @@ namespace NppModelica
 
                     toolStripStatusLabel1.Text = lexer.tokenList.Count + " tokens | " + lexer.numberOfErrors + " errors";
                 }
-
-                if (constantToolStripMenuItem.Checked)
-                {
-                    foreach (MetaModelica.Constant cst in scope.constants.Values)
-                    {
-                        if (cst.name.ToLower().Contains(textBox1.Text.ToLower()))
-                        {
-                            TreeNode cstNode = new TreeNode();
-                            cstNode.Text = cst.name;
-                            cstNode.Tag = cst;
-                            cstNode.ImageIndex = iConstantPublic;
-                            cstNode.SelectedImageIndex = iConstantPublic;
-
-                            treeView1.Nodes.Add(cstNode);
-                        }
-                    }
-                }
-
-                if (typesToolStripMenuItem.Checked)
-                {
-                    foreach (MetaModelica.Type typ in scope.types.Values)
-                    {
-                        if (typ.name.ToLower().Contains(textBox1.Text.ToLower()))
-                        {
-                            TreeNode typNode = new TreeNode();
-                            typNode.Text = typ.name;
-                            typNode.Tag = typ;
-                            typNode.ImageIndex = iTypePublic;
-                            typNode.SelectedImageIndex = iTypePublic;
-
-                            treeView1.Nodes.Add(typNode);
-                        }
-                    }
-                }
-
-                if (recordToolStripMenuItem.Checked)
-                {
-                    foreach (MetaModelica.Record rcd in scope.records.Values)
-                    {
-                        if (rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
-                        {
-                            TreeNode rcdNode = new TreeNode();
-                            rcdNode.Text = rcd.name;
-                            rcdNode.Tag = rcd;
-                            rcdNode.ImageIndex = iRecordPublic;
-                            rcdNode.SelectedImageIndex = iRecordPublic;
-
-                            treeView1.Nodes.Add(rcdNode);
-                        }
-                    }
-                }
-
-                if (uniontypeToolStripMenuItem.Checked)
-                {
-                    foreach (MetaModelica.Uniontype uty in scope.uniontypes.Values)
-                    {
-                        TreeNode utyNode = new TreeNode();
-                        utyNode.Text = uty.name;
-                        utyNode.Tag = uty;
-                        utyNode.ImageIndex = iUniontypePublic;
-                        utyNode.SelectedImageIndex = iUniontypePublic;
-
-                        bool emptyUty = true;
-                        foreach (MetaModelica.Record rcd in uty.records.Values)
-                        {
-                            if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode rcdNode = new TreeNode();
-                                rcdNode.Text = rcd.name;
-                                rcdNode.Tag = rcd;
-                                rcdNode.ImageIndex = iRecordPublic;
-                                rcdNode.SelectedImageIndex = iRecordPublic;
-
-                                utyNode.Nodes.Add(rcdNode);
-                                emptyUty = false;
-                            }
-                        }
-
-                        if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || !emptyUty)
-                        {
-                            treeView1.Nodes.Add(utyNode);
-                        }
-                    }
-                }
-
-                foreach(MetaModelica.Package p in scope.packages.Values)
-                {
-                    TreeNode node = new TreeNode();
-                    node.Name = p.name;
-                    node.Text = p.name;
-                    node.Tag = p;
-                    node.ImageIndex = iPackagePublic;
-                    node.SelectedImageIndex = iPackagePublic;
-
-                    // call graph
-                    if (callGraphToolStripMenuItem.Checked)
-                    {
-                        try
-                        {
-                            List<string> unusedFunctions;
-                            String dotSource = p.getGraphvizSource(out unusedFunctions);
-                            if (unusedFunctions.Count > 0)
-                            {
-                                if (unusedFunctions.Count > 1)
-                                    richTextBox1.Text = unusedFunctions.Count + " unused protected functions found:";
-                                else
-                                    richTextBox1.Text = "1 unused protected function found:";
-
-                                foreach (String fnc in unusedFunctions)
-                                    richTextBox1.Text += "\n  - " + fnc;
-                            }
-                            else
-                                richTextBox1.Text = "No unused protected functions found";
-
-                            System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
-
-                            Process process = new Process();
-                            process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
-                            process.StartInfo.WorkingDirectory = dataPath;
-                            //process.StartInfo.Arguments = "-Tsvg " + packageName + ".dot -o " + packageName + ".svg";
-                            process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
-                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                            process.Start();
-                            process.WaitForExit();
-
-                            System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
-                            //callGraphForm.updateCallGraph(System.IO.Path.Combine(dataPath, packageName + ".svg"));
-                        }
-                        catch (Exception e)
-                        {
-                            toolStripStatusLabel1.Text = e.Message;
-                            MessageBox.Show(e.Message);
-                        }
-                    }
-
-                    if (functionToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Function fcn in p.publicFunctions.Values)
-                        {
-                            if (fcn.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode fcnNode = new TreeNode();
-                                fcnNode.Text = fcn.name;
-                                fcnNode.Tag = fcn;
-                                fcnNode.ImageIndex = iFunctionPublic;
-                                fcnNode.SelectedImageIndex = iFunctionPublic;
-
-                                node.Nodes.Add(fcnNode);
-                            }
-                        }
-                    }
-                    if (functionToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Function fcn in p.protectedFunctions.Values)
-                        {
-                            if (fcn.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode fcnNode = new TreeNode();
-                                fcnNode.Text = fcn.name;
-                                fcnNode.Tag = fcn;
-                                fcnNode.ImageIndex = iFunction;
-                                fcnNode.SelectedImageIndex = iFunction;
-
-                                node.Nodes.Add(fcnNode);
-                            }
-                        }
-                    }
-
-                    if (typesToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Type typ in p.publicTypes.Values)
-                        {
-                            if (typ.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode typNode = new TreeNode();
-                                typNode.Text = typ.name;
-                                typNode.Tag = typ;
-                                typNode.ImageIndex = iTypePublic;
-                                typNode.SelectedImageIndex = iTypePublic;
-
-                                node.Nodes.Add(typNode);
-                            }
-                        }
-                    }
-                    if (functionToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Type typ in p.protectedTypes.Values)
-                        {
-                            if (typ.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode typNode = new TreeNode();
-                                typNode.Text = typ.name;
-                                typNode.Tag = typ;
-                                typNode.ImageIndex = iType;
-                                typNode.SelectedImageIndex = iType;
-
-                                node.Nodes.Add(typNode);
-                            }
-                        }
-                    }
-
-                    if (recordToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Record rcd in p.publicRecords.Values)
-                        {
-                            if (rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode rcdNode = new TreeNode();
-                                rcdNode.Text = rcd.name;
-                                rcdNode.Tag = rcd;
-                                rcdNode.ImageIndex = iRecordPublic;
-                                rcdNode.SelectedImageIndex = iRecordPublic;
-
-                                node.Nodes.Add(rcdNode);
-                            }
-                        }
-                    }
-                    if (recordToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Record rcd in p.protectedRecords.Values)
-                        {
-                            if (rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode rcdNode = new TreeNode();
-                                rcdNode.Text = rcd.name;
-                                rcdNode.Tag = rcd;
-                                rcdNode.ImageIndex = iRecord;
-                                rcdNode.SelectedImageIndex = iRecord;
-
-                                node.Nodes.Add(rcdNode);
-                            }
-                        }
-                    }
-
-                    if (constantToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Constant cst in p.publicConstants.Values)
-                        {
-                            if (cst.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode cstNode = new TreeNode();
-                                cstNode.Text = cst.name;
-                                cstNode.Tag = cst;
-                                cstNode.ImageIndex = iConstantPublic;
-                                cstNode.SelectedImageIndex = iConstantPublic;
-
-                                node.Nodes.Add(cstNode);
-                            }
-                        }
-                    }
-                    if (constantToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Constant cst in p.protectedConstants.Values)
-                        {
-                            if (cst.name.ToLower().Contains(textBox1.Text.ToLower()))
-                            {
-                                TreeNode cstNode = new TreeNode();
-                                cstNode.Text = cst.name;
-                                cstNode.Tag = cst;
-                                cstNode.ImageIndex = iConstant;
-                                cstNode.SelectedImageIndex = iConstant;
-
-                                node.Nodes.Add(cstNode);
-                            }
-                        }
-                    }
-
-                    if (uniontypeToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Uniontype uty in p.publicUniontypes.Values)
-                        {
-                            TreeNode utyNode = new TreeNode();
-                            utyNode.Text = uty.name;
-                            utyNode.Tag = uty;
-                            utyNode.ImageIndex = iUniontypePublic;
-                            utyNode.SelectedImageIndex = iUniontypePublic;
-
-                            bool emptyUty = true;
-
-                            foreach (MetaModelica.Record rcd in uty.records.Values)
-                            {
-                                if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
-                                {
-                                    TreeNode rcdNode = new TreeNode();
-                                    rcdNode.Text = rcd.name;
-                                    rcdNode.Tag = rcd;
-                                    rcdNode.ImageIndex = iRecordPublic;
-                                    rcdNode.SelectedImageIndex = iRecordPublic;
-
-                                    utyNode.Nodes.Add(rcdNode);
-                                    emptyUty = false;
-                                }
-                            }
-
-                            if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || !emptyUty)
-                            {
-                                node.Nodes.Add(utyNode);
-                            }
-                        }
-                    }
-                    if (uniontypeToolStripMenuItem.Checked && !publicOnlyToolStripMenuItem.Checked)
-                    {
-                        foreach (MetaModelica.Uniontype uty in p.protectedUniontypes.Values)
-                        {
-                            TreeNode utyNode = new TreeNode();
-                            utyNode.Text = uty.name;
-                            utyNode.Tag = uty;
-                            utyNode.ImageIndex = iUniontype;
-                            utyNode.SelectedImageIndex = iUniontype;
-
-                            bool emptyUty = true;
-
-                            foreach (MetaModelica.Record rcd in uty.records.Values)
-                            {
-                                if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || rcd.name.ToLower().Contains(textBox1.Text.ToLower()))
-                                {
-                                    TreeNode rcdNode = new TreeNode();
-                                    rcdNode.Text = rcd.name;
-                                    rcdNode.Tag = rcd;
-                                    rcdNode.ImageIndex = iRecord;
-                                    rcdNode.SelectedImageIndex = iRecord;
-
-                                    utyNode.Nodes.Add(rcdNode);
-                                }
-                            }
-
-                            if (uty.name.ToLower().Contains(textBox1.Text.ToLower()) || !emptyUty)
-                            {
-                                node.Nodes.Add(utyNode);
-                            }
-                        }
-                    }
-
-                    node.Expand();
-                    treeView1.Nodes.Add(node);
-                }
-
-                treeView1.Sort();
-                treeView1.EndUpdate();
             }
             catch (Exception e)
             {
-                treeView1.EndUpdate();
                 toolStripStatusLabel1.Text = e.Message;
+                return;
+            }
+
+            treeView1.BeginUpdate();
+            treeView1.Nodes.Clear();
+            treeView1.Nodes.AddRange(scope.getTreeNodes(constantToolStripMenuItem.Checked, typesToolStripMenuItem.Checked, recordToolStripMenuItem.Checked, uniontypeToolStripMenuItem.Checked, functionToolStripMenuItem.Checked, publicOnlyToolStripMenuItem.Checked, textBox1.Text));
+            treeView1.Sort();
+            treeView1.EndUpdate();
+
+            // call graph
+            if (callGraphToolStripMenuItem.Checked)
+            {
+                foreach (MetaModelica.Package p in scope.packages.Values)
+                {
+                    try
+                    {
+                        List<string> unusedFunctions;
+                        String dotSource = p.getGraphvizSource(out unusedFunctions);
+                        if (unusedFunctions.Count > 0)
+                        {
+                            if (unusedFunctions.Count > 1)
+                                richTextBox1.Text = unusedFunctions.Count + " unused protected functions found:";
+                            else
+                                richTextBox1.Text = "1 unused protected function found:";
+
+                            foreach (String fnc in unusedFunctions)
+                                richTextBox1.Text += "\n  - " + fnc;
+                        }
+                        else
+                            richTextBox1.Text = "No unused protected functions found";
+
+                        System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
+
+                        Process process = new Process();
+                        process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
+                        process.StartInfo.WorkingDirectory = dataPath;
+                        process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        process.Start();
+                        process.WaitForExit();
+
+                        System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                    }
+                    catch (Exception e)
+                    {
+                        toolStripStatusLabel1.Text = e.Message;
+                        MessageBox.Show(e.Message);
+                    }
+                }
             }
         }
 
@@ -663,6 +357,7 @@ namespace NppModelica
         private void callGraphViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             callGraphToolStripMenuItem.Checked = true;
+            updateOutline(false);
             String filename = System.IO.Path.Combine(dataPath, "temp.svg");
             if(System.IO.File.Exists(filename))
                 System.Diagnostics.Process.Start(filename);
@@ -670,7 +365,8 @@ namespace NppModelica
 
         private void callGraphToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            updateOutline(false);
+            if(callGraphToolStripMenuItem.Checked)
+                updateOutline(false);
         }
 
         private void publicOnlyToolStripMenuItem_Click(object sender, EventArgs e)
