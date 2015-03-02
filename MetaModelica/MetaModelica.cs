@@ -652,7 +652,7 @@ namespace MetaModelica
                     else
                     {
                         dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
-                        if (functionStats.ContainsKey(fc))
+                        if (functionStats.ContainsKey(fc) && fc != f.name)
                         {
                             functionStats[fc] += 1;
                         }

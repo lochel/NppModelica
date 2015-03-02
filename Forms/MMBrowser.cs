@@ -11,12 +11,14 @@ namespace NppModelica
 {
     public partial class MMBrowser : Form
     {
-        public String fullfilename = "";
-        public String source = "";
-        public MetaModelica.Scope scope = null;
-        public MetaModelica.Parser.Lexer lexer = null;
+        private String fullfilename = "";
+        private String source = "";
+        private MetaModelica.Scope mmScope = null;
+        private Susan.Scope tplScope = null;
+        private MetaModelica.Parser.Lexer mmLexer = null;
+        private Susan.Parser.Lexer tplLexer = null;
 
-        public String dataPath = "";
+        private String dataPath = "";
         
         public MMBrowser()
         {
@@ -111,7 +113,7 @@ namespace NppModelica
 
                     richTextBox1.Text = "package " + pcg.name + ":\n" + pcg.description;
                 }
-                if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Function")
+                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Function")
                 {
                     MetaModelica.Function fcn = (MetaModelica.Function)treeView1.SelectedNode.Tag;
 
@@ -171,6 +173,18 @@ namespace NppModelica
 
                     richTextBox1.Text = "constant " + typ.name;
                 }
+                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "Susan.Template")
+                {
+                    Susan.Template tpl = (Susan.Template)treeView1.SelectedNode.Tag;
+
+                    IntPtr curScintilla = PluginBase.GetCurrentScintilla();
+                    Win32.SendMessage(curScintilla, SciMsg.SCI_GOTOLINE, tpl.startPosition.row + 1000, 0);
+                    Win32.SendMessage(curScintilla, SciMsg.SCI_ENSUREVISIBLE, tpl.startPosition.row - 1, 0);
+                    Win32.SendMessage(curScintilla, SciMsg.SCI_GOTOLINE, tpl.startPosition.row - 1, 0);
+                    Win32.SendMessage(curScintilla, SciMsg.SCI_GRABFOCUS, 0, 0);
+
+                    richTextBox1.Text = "template " + tpl.name;
+                }
                 else
                 {
                     richTextBox1.Text = treeView1.SelectedNode.Tag.GetType().ToString();
@@ -189,7 +203,7 @@ namespace NppModelica
                 treeView1_DoubleClick(sender, null);
         }
 
-        protected string getText()
+        private string getText()
         {
             IntPtr curScintilla = PluginBase.GetCurrentScintilla();
 
@@ -204,7 +218,7 @@ namespace NppModelica
             return buffer.ToString();
         }
 
-        protected void updateOutline(Boolean parseSource)
+        private void updateOutline(Boolean parseSource)
         {
             StringBuilder currentDirectory = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDIRECTORY, Win32.MAX_PATH, currentDirectory);
@@ -220,7 +234,7 @@ namespace NppModelica
             if (System.IO.File.Exists(fullfilename) == false)
                 return;
 
-            if (fullfilename.Substring(fullfilename.Length - 3) != ".mo")
+            if (fullfilename.Substring(fullfilename.Length - 3) != ".mo" && fullfilename.Substring(fullfilename.Length - 4) != ".tpl")
                 return;
 
             try
@@ -229,12 +243,24 @@ namespace NppModelica
                 {
                     source = getText();
 
-                    scope = new MetaModelica.Scope();
-                    lexer = new MetaModelica.Parser.Lexer(source, MetaModelica.Parser.Version.MetaModelica, true);
+                    if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                    {
+                        mmScope = new MetaModelica.Scope();
+                        mmLexer = new MetaModelica.Parser.Lexer(source, MetaModelica.Parser.Version.MetaModelica, true);
+                    }
+
+                    if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                    {
+                        tplScope = new Susan.Scope();
+                        tplLexer = new Susan.Parser.Lexer(source, true);
+                    }
 
                     try
                     {
-                        scope.loadSource(lexer.tokenList);
+                        if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                            mmScope.loadSource(mmLexer.tokenList);
+                        if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                            tplScope.loadSource(tplLexer.tokenList);
                     }
                     catch (Exception e)
                     {
@@ -242,7 +268,7 @@ namespace NppModelica
                         throw e;
                     }
 
-                    toolStripStatusLabel1.Text = lexer.tokenList.Count + " tokens | " + lexer.numberOfErrors + " errors";
+                    toolStripStatusLabel1.Text = mmLexer.tokenList.Count + " tokens | " + mmLexer.numberOfErrors + " errors";
                 }
             }
             catch (Exception e)
@@ -252,48 +278,95 @@ namespace NppModelica
             }
 
             treeView1.BeginUpdate();
-            treeView1.Nodes.AddRange(scope.getTreeNodes(constantToolStripMenuItem.Checked, typesToolStripMenuItem.Checked, recordToolStripMenuItem.Checked, uniontypeToolStripMenuItem.Checked, functionToolStripMenuItem.Checked, publicOnlyToolStripMenuItem.Checked, textBox1.Text));
+            if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                treeView1.Nodes.AddRange(mmScope.getTreeNodes(constantToolStripMenuItem.Checked, typesToolStripMenuItem.Checked, recordToolStripMenuItem.Checked, uniontypeToolStripMenuItem.Checked, functionToolStripMenuItem.Checked, publicOnlyToolStripMenuItem.Checked, textBox1.Text));
+            if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                treeView1.Nodes.AddRange(tplScope.getTreeNodes(textBox1.Text));
             treeView1.Sort();
             treeView1.EndUpdate();
 
             // call graph
             if (callGraphToolStripMenuItem.Checked)
             {
-                foreach (MetaModelica.Package p in scope.packages.Values)
+                if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
                 {
-                    try
+                    foreach (MetaModelica.Package p in mmScope.packages.Values)
                     {
-                        List<string> unusedFunctions;
-                        String dotSource = p.getGraphvizSource(out unusedFunctions);
-                        if (unusedFunctions.Count > 0)
+                        try
                         {
-                            if (unusedFunctions.Count > 1)
-                                richTextBox1.Text = unusedFunctions.Count + " unused protected functions found:";
+                            List<string> unusedFunctions;
+                            String dotSource = p.getGraphvizSource(out unusedFunctions);
+                            if (unusedFunctions.Count > 0)
+                            {
+                                if (unusedFunctions.Count > 1)
+                                    richTextBox1.Text = unusedFunctions.Count + " unused protected functions found:";
+                                else
+                                    richTextBox1.Text = "1 unused protected function found:";
+
+                                foreach (String fnc in unusedFunctions)
+                                    richTextBox1.Text += "\n  - " + fnc;
+                            }
                             else
-                                richTextBox1.Text = "1 unused protected function found:";
+                                richTextBox1.Text = "No unused protected functions found";
 
-                            foreach (String fnc in unusedFunctions)
-                                richTextBox1.Text += "\n  - " + fnc;
+                            System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
+
+                            Process process = new Process();
+                            process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
+                            process.StartInfo.WorkingDirectory = dataPath;
+                            process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
+                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            process.Start();
+                            process.WaitForExit();
+
+                            System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
                         }
-                        else
-                            richTextBox1.Text = "No unused protected functions found";
-
-                        System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
-
-                        Process process = new Process();
-                        process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
-                        process.StartInfo.WorkingDirectory = dataPath;
-                        process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
-                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                        process.Start();
-                        process.WaitForExit();
-
-                        System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                        catch (Exception e)
+                        {
+                            toolStripStatusLabel1.Text = e.Message;
+                            MessageBox.Show(e.Message);
+                        }
                     }
-                    catch (Exception e)
+                }
+
+                if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                {
+                    foreach (Susan.Package p in tplScope.packages.Values)
                     {
-                        toolStripStatusLabel1.Text = e.Message;
-                        MessageBox.Show(e.Message);
+                        try
+                        {
+                            List<string> unusedFunctions;
+                            String dotSource = p.getGraphvizSource(out unusedFunctions);
+                            if (unusedFunctions.Count > 0)
+                            {
+                                if (unusedFunctions.Count > 1)
+                                    richTextBox1.Text = unusedFunctions.Count + " top-level templates found:";
+                                else
+                                    richTextBox1.Text = "1 top-level template found:";
+
+                                foreach (String fnc in unusedFunctions)
+                                    richTextBox1.Text += "\n  - " + fnc;
+                            }
+                            else
+                                richTextBox1.Text = "No top-level templates found";
+
+                            System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
+
+                            Process process = new Process();
+                            process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
+                            process.StartInfo.WorkingDirectory = dataPath;
+                            process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
+                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            process.Start();
+                            process.WaitForExit();
+
+                            System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                        }
+                        catch (Exception e)
+                        {
+                            toolStripStatusLabel1.Text = e.Message;
+                            MessageBox.Show(e.Message);
+                        }
                     }
                 }
             }

@@ -59,6 +59,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Susan\Lexer.cs" />
+    <Compile Include="Susan\Susan.cs" />
+    <Compile Include="Susan\Token.cs" />
     <Compile Include="UnmanagedExports.cs" />
   </ItemGroup>
   <ItemGroup>
