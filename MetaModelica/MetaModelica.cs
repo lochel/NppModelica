@@ -621,17 +621,10 @@ namespace MetaModelica
             {
                 foreach (String fc in f.functionCalls.Keys)
                 {
-                    if (fc.Contains("."))
-                    {
-                        string fc_package = fc.Substring(0, fc.IndexOf('.'));
-                        string fc_function = fc.Substring(fc.IndexOf('.') + 1);
-
-                        //dotSource += "  " + name + "_" + f.name + " -> " + fc_package + "_" + fc_function + "\n";
-                    }
-                    else
+                    if (!fc.Contains("."))
                     {
                         dotSource += "  " + name + "_" + f.name + " -> " + name + "_" + fc + "\n";
-                        if (functionStats.ContainsKey(fc))
+                        if (functionStats.ContainsKey(fc) && fc != f.name)
                         {
                             functionStats[fc] += 1;
                         }
