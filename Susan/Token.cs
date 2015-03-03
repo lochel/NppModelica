@@ -25,7 +25,6 @@ namespace Susan
         {
             UNKNOWN,
             IDENT,
-            STRING,
             UNSIGNED_NUMBER,
             COMMENT,
             WHITESPACE,
@@ -93,11 +92,6 @@ namespace Susan
             public bool isSYMBOL(string value)
             {
                 return (type == TokenType.SYMBOL) && (this.value == value);
-            }
-
-            public bool isSTRING()
-            {
-                return type == TokenType.STRING;
             }
 
             public bool isUNSIGNED_NUMBER()

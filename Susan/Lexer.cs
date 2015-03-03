@@ -218,7 +218,9 @@ namespace Susan
                                                   source[i] == '/' ||
                                                   source[i] == '^' ||
                                                   source[i] == '[' ||
-                                                  source[i] == ']'))
+                                                  source[i] == ']' ||
+                                                  source[i] == '\'' ||
+                                                  source[i] == '\"'))
                     {
                         i++;
                         column++;
@@ -234,74 +236,6 @@ namespace Susan
                             column++;
                         } while (i < sourceLength && (isDigit(source[i]) || isNonDigit(source[i])));
                         tokenList.Add(new Token(TokenType.IDENT, LexicalErrorType.None, source.Substring(startI, i - startI), startPosition, new Position(row, column), startI, i - startI));
-                    }
-                    #endregion
-                    #region Q-IDENT
-                    else if (i + 2 < sourceLength && source[i] == '\'' && (isQChar(source[i + 1]) || isSEscape(source[i + 1], source[i + 2])))
-                    {
-                        i++;
-                        column++;
-                        do
-                        {
-                            if (isQChar(source[i]))
-                            {
-                                i++;
-                                column++;
-                            }
-                            else if (isSEscape(source[i], source[i + 1]))
-                            {
-                                i += 2;
-                                column += 2;
-                            }
-                        } while (i + 1 < sourceLength && (isQChar(source[i]) || isSEscape(source[i], source[i + 1])));
-
-                        if (source[i] == '\'')
-                        {
-                            i++;
-                            column++;
-                        }
-                        tokenList.Add(new Token(TokenType.IDENT, LexicalErrorType.None, source.Substring(startI, i - startI), startPosition, new Position(row, column), startI, i - startI));
-                    }
-                    #endregion
-                    #region STRING
-                    else if (source[i] == '\"')
-                    {
-                        i++;
-                        column++;
-                        while (i + 1 < sourceLength && (isSChar(source[i]) || isSEscape(source[i], source[i + 1])))
-                        {
-                            if (isSChar(source[i]))
-                            {
-                                if (source[i] == '\n')
-                                {
-                                    i++;
-                                    row++;
-                                    column = 1;
-                                }
-                                else
-                                {
-                                    i++;
-                                    column++;
-                                }
-                            }
-                            else if (isSEscape(source[i], source[i + 1]))
-                            {
-                                i += 2;
-                                column += 2;
-                            }
-                        }
-
-                        if (i < sourceLength && source[i] == '\"')
-                        {
-                            i++;
-                            column++;
-                            tokenList.Add(new Token(TokenType.STRING, LexicalErrorType.None, source.Substring(startI + 1, i - startI - 2), startPosition, new Position(row, column), startI, i - startI));
-                        }
-                        else
-                        {
-                            tokenList.Add(new Token(TokenType.STRING, LexicalErrorType.Unknown, source.Substring(startI, i - startI), startPosition, new Position(row, column), startI, i - startI));
-                            numberOfErrors++;
-                        }
                     }
                     #endregion
                     #region UNSIGNED_NUBER
