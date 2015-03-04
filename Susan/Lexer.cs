@@ -310,7 +310,7 @@ namespace Susan
                                 else
                                 {
                                     i++;
-                                    row++;
+                                    column++;
                                 }
                             }
 
