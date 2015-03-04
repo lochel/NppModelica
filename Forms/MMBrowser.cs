@@ -264,15 +264,19 @@ namespace NppModelica
                     }
                     catch (Exception e)
                     {
-                        richTextBox1.Text = e.Message;
+                        richTextBox1.Text += e.Message;
                         throw e;
                     }
 
-                    toolStripStatusLabel1.Text = mmLexer.tokenList.Count + " tokens | " + mmLexer.numberOfErrors + " errors";
+                    if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                        toolStripStatusLabel1.Text = mmLexer.tokenList.Count + " tokens | " + mmLexer.numberOfErrors + " errors";
+                    if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                        toolStripStatusLabel1.Text = tplLexer.tokenList.Count + " tokens | " + tplLexer.numberOfErrors + " errors";
                 }
             }
             catch (Exception e)
             {
+                richTextBox1.Text += e.Message;
                 toolStripStatusLabel1.Text = e.Message;
                 return;
             }

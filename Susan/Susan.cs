@@ -39,6 +39,14 @@ namespace Susan
                 throw new Exception("IDENT expected: got " + tokenList[i].ToString());
             }
 
+            if (i < tokenList.Count && tokenList[i].isSTRING())
+            {
+                description = tokenList[i].value;
+                i++;
+            }
+            else
+                description = "";
+
             // HACK to parse "function abc = xyz;"
             if (i < tokenList.Count && tokenList[i].isSYMBOL("="))
             {
@@ -90,6 +98,7 @@ namespace Susan
     public class Package
     {
         public String name;
+        public String description;
         public Parser.Position startPosition;
 
         public Hashtable templates;
@@ -113,6 +122,14 @@ namespace Susan
             }
             else
                 throw new Exception("expected: IDENT, got: " + tokenList[i].ToString());
+
+            if (i < tokenList.Count && tokenList[i].isSTRING())
+            {
+                description = tokenList[i].value;
+                i++;
+            }
+            else
+                description = "";
 
             while (i + 2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";")))
             {
