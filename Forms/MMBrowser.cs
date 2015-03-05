@@ -288,8 +288,10 @@ namespace NppModelica
                 treeView1.Nodes.AddRange(tplScope.getTreeNodes(textBox1.Text));
             treeView1.Sort();
             treeView1.EndUpdate();
+        }
 
-            // call graph
+        private void generateCallGraph()
+        {
             if (callGraphToolStripMenuItem.Checked)
             {
                 if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
@@ -379,7 +381,10 @@ namespace NppModelica
         public void notification(SCNotification nc)
         {
             if ((nc.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED) || (nc.nmhdr.code == (uint)NppMsg.NPPN_FILESAVED))
+            {
                 updateOutline(true);
+                generateCallGraph();
+            }
         } 
         
         private void simulateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -434,7 +439,7 @@ namespace NppModelica
         private void callGraphViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             callGraphToolStripMenuItem.Checked = true;
-            updateOutline(false);
+            generateCallGraph();
             String filename = System.IO.Path.Combine(dataPath, "temp.svg");
             if(System.IO.File.Exists(filename))
                 System.Diagnostics.Process.Start(filename);
@@ -443,7 +448,7 @@ namespace NppModelica
         private void callGraphToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if(callGraphToolStripMenuItem.Checked)
-                updateOutline(false);
+                generateCallGraph();
         }
 
         private void publicOnlyToolStripMenuItem_Click(object sender, EventArgs e)
