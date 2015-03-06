@@ -49,7 +49,7 @@ namespace NppModelica
             
             if (!System.IO.Directory.Exists(configPath))
             {
-                MessageBox.Show("There is no OMNotepad++ config folder for plugins. The following folder got created:\n" + configPath, "OMNotpad++ | " + Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("There is no Notepad++ config folder for plugins. The following folder got created:\n" + configPath, "Notpad++ | " + Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 System.IO.Directory.CreateDirectory(configPath);
             }
             
@@ -424,18 +424,6 @@ namespace NppModelica
             // Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(tmpPath + "output"));
         }
 
-        private void tstbGraphvizPath_TextChanged(object sender, EventArgs e)
-        {
-            StringBuilder sbConfigPath = new StringBuilder(Win32.MAX_PATH);
-            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbConfigPath);
-            string configPath = sbConfigPath.ToString();
-
-            if (!System.IO.Directory.Exists(configPath))
-                System.IO.Directory.CreateDirectory(configPath);
-
-            Win32.WritePrivateProfileString("Graphviz", "path", tstbGraphvizPath.Text, Main.iniFilePath);
-        }
-
         private void callGraphViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             callGraphToolStripMenuItem.Checked = true;
@@ -495,6 +483,35 @@ namespace NppModelica
         private void latestReleaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/lochel/NppModelica/releases/latest");
+        }
+
+        private void changeDirectoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+            fbd.Description = "Select the root directory of your Graphviz installation.";
+            fbd.ShowNewFolderButton = false;
+
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // check if selected path is graphviz root folder
+                if (!System.IO.File.Exists(System.IO.Path.Combine(fbd.SelectedPath, @"bin\dot.exe")))
+                {
+                    MessageBox.Show("Selected folder is not a graphviz root folder.", "Notpad++ | " + Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    changeDirectoryToolStripMenuItem_Click(sender, e);
+                    return;
+                }
+
+                StringBuilder sbConfigPath = new StringBuilder(Win32.MAX_PATH);
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbConfigPath);
+                string configPath = sbConfigPath.ToString();
+                
+                if (!System.IO.Directory.Exists(configPath))
+                    System.IO.Directory.CreateDirectory(configPath);
+
+                tstbGraphvizPath.Text = fbd.SelectedPath;
+                Win32.WritePrivateProfileString("Graphviz", "path", tstbGraphvizPath.Text, Main.iniFilePath);
+            }
         }
     }
 }

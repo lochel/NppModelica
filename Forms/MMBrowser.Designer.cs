@@ -39,6 +39,7 @@
             this.uniontypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hELPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.latestReleaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.constantToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vIEWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.publicOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +58,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
-            this.latestReleaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -76,23 +77,24 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // changeWorkspaceToolStripMenuItem
             // 
             this.changeWorkspaceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tstbGraphvizPath});
+            this.tstbGraphvizPath,
+            this.changeDirectoryToolStripMenuItem});
             this.changeWorkspaceToolStripMenuItem.Name = "changeWorkspaceToolStripMenuItem";
-            this.changeWorkspaceToolStripMenuItem.Size = new System.Drawing.Size(120, 22);
+            this.changeWorkspaceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.changeWorkspaceToolStripMenuItem.Text = "Graphviz";
             // 
             // tstbGraphvizPath
             // 
             this.tstbGraphvizPath.Name = "tstbGraphvizPath";
+            this.tstbGraphvizPath.ReadOnly = true;
             this.tstbGraphvizPath.Size = new System.Drawing.Size(300, 23);
-            this.tstbGraphvizPath.TextChanged += new System.EventHandler(this.tstbGraphvizPath_TextChanged);
             // 
             // sETTINGSToolStripMenuItem
             // 
@@ -157,6 +159,13 @@
             this.hELPToolStripMenuItem.Name = "hELPToolStripMenuItem";
             this.hELPToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.hELPToolStripMenuItem.Text = "HELP";
+            // 
+            // latestReleaseToolStripMenuItem
+            // 
+            this.latestReleaseToolStripMenuItem.Name = "latestReleaseToolStripMenuItem";
+            this.latestReleaseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.latestReleaseToolStripMenuItem.Text = "Latest release";
+            this.latestReleaseToolStripMenuItem.Click += new System.EventHandler(this.latestReleaseToolStripMenuItem_Click);
             // 
             // constantToolStripMenuItem
             // 
@@ -361,12 +370,12 @@
             this.fileSystemWatcher1.EnableRaisingEvents = true;
             this.fileSystemWatcher1.SynchronizingObject = this;
             // 
-            // latestReleaseToolStripMenuItem
+            // changeDirectoryToolStripMenuItem
             // 
-            this.latestReleaseToolStripMenuItem.Name = "latestReleaseToolStripMenuItem";
-            this.latestReleaseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.latestReleaseToolStripMenuItem.Text = "Latest release";
-            this.latestReleaseToolStripMenuItem.Click += new System.EventHandler(this.latestReleaseToolStripMenuItem_Click);
+            this.changeDirectoryToolStripMenuItem.Name = "changeDirectoryToolStripMenuItem";
+            this.changeDirectoryToolStripMenuItem.Size = new System.Drawing.Size(360, 22);
+            this.changeDirectoryToolStripMenuItem.Text = "change directory";
+            this.changeDirectoryToolStripMenuItem.Click += new System.EventHandler(this.changeDirectoryToolStripMenuItem_Click);
             // 
             // MMBrowser
             // 
@@ -431,6 +440,7 @@
         private System.Windows.Forms.ToolStripMenuItem publicOnlyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem latestReleaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changeDirectoryToolStripMenuItem;
 
     }
 }
