@@ -491,26 +491,28 @@ namespace NppModelica
 
             fbd.Description = "Select the root directory of your Graphviz installation.";
             fbd.ShowNewFolderButton = false;
+            fbd.SelectedPath = tstbGraphvizPath.Text;
 
-            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            while (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 // check if selected path is graphviz root folder
                 if (!System.IO.File.Exists(System.IO.Path.Combine(fbd.SelectedPath, @"bin\dot.exe")))
                 {
                     MessageBox.Show("Selected folder is not a graphviz root folder.", "Notpad++ | " + Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    changeDirectoryToolStripMenuItem_Click(sender, e);
+                }
+                else
+                {
+                    StringBuilder sbConfigPath = new StringBuilder(Win32.MAX_PATH);
+                    Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbConfigPath);
+                    string configPath = sbConfigPath.ToString();
+
+                    if (!System.IO.Directory.Exists(configPath))
+                        System.IO.Directory.CreateDirectory(configPath);
+
+                    tstbGraphvizPath.Text = fbd.SelectedPath;
+                    Win32.WritePrivateProfileString("Graphviz", "path", tstbGraphvizPath.Text, Main.iniFilePath);
                     return;
                 }
-
-                StringBuilder sbConfigPath = new StringBuilder(Win32.MAX_PATH);
-                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbConfigPath);
-                string configPath = sbConfigPath.ToString();
-                
-                if (!System.IO.Directory.Exists(configPath))
-                    System.IO.Directory.CreateDirectory(configPath);
-
-                tstbGraphvizPath.Text = fbd.SelectedPath;
-                Win32.WritePrivateProfileString("Graphviz", "path", tstbGraphvizPath.Text, Main.iniFilePath);
             }
         }
     }
