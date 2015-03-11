@@ -19,7 +19,7 @@ namespace NppModelica
         private Susan.Parser.Lexer tplLexer = null;
 
         private String dataPath = "";
-        
+
         public MMBrowser()
         {
             InitializeComponent();
@@ -40,22 +40,22 @@ namespace NppModelica
             myImageList.Images.Add(Properties.Resources.record_public);     // 11
 
             treeView1.ImageList = myImageList;
-            
+
             // load config
             StringBuilder sbIniFilePath = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, sbIniFilePath);
             string configPath = sbIniFilePath.ToString();
             dataPath = System.IO.Path.Combine(configPath, Main.PluginName);
-            
+
             if (!System.IO.Directory.Exists(configPath))
             {
                 MessageBox.Show("There is no Notepad++ config folder for plugins. The following folder got created:\n" + configPath, "Notpad++ | " + Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 System.IO.Directory.CreateDirectory(configPath);
             }
-            
+
             if (!System.IO.Directory.Exists(dataPath))
                 System.IO.Directory.CreateDirectory(dataPath);
-            
+
             StringBuilder sbWorkspace = new StringBuilder(Win32.MAX_PATH);
             Win32.GetPrivateProfileString("Graphviz", "path", "", sbWorkspace, Win32.MAX_PATH, Main.iniFilePath);
             tstbGraphvizPath.Text = sbWorkspace.ToString();
@@ -69,12 +69,13 @@ namespace NppModelica
 
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
+            splitContainer3.Panel1Collapsed = !currentFolderToolStripMenuItem.Checked;
 
             Main.initialized = true;
 
             updateOutline(true);
         }
-        
+
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
@@ -83,6 +84,11 @@ namespace NppModelica
         private void consoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
+        }
+
+        private void currentFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            splitContainer3.Panel1Collapsed = !currentFolderToolStripMenuItem.Checked;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -288,6 +294,14 @@ namespace NppModelica
                 treeView1.Nodes.AddRange(tplScope.getTreeNodes(textBox1.Text));
             treeView1.Sort();
             treeView1.EndUpdate();
+
+            listBox1.Items.Clear();
+            String path = System.IO.Path.GetDirectoryName(fullfilename);
+            String ext = System.IO.Path.GetExtension(fullfilename);
+
+            string[] files = System.IO.Directory.GetFiles(path, "*" + ext);
+            foreach (string file in files)
+                listBox1.Items.Add(System.IO.Path.GetFileName(file));
         }
 
         private void generateCallGraph()
@@ -385,8 +399,8 @@ namespace NppModelica
                 updateOutline(true);
                 generateCallGraph();
             }
-        } 
-        
+        }
+
         private void simulateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_SAVECURRENTFILE, 0, 0);
@@ -394,7 +408,7 @@ namespace NppModelica
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDIRECTORY, Win32.MAX_PATH, currentDirectory);
             StringBuilder filename = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETFILENAME, Win32.MAX_PATH, filename);
-            
+
             // simulate
             // create the ProcessStartInfo using "cmd" as the program to be run,
             // and "/c " as the parameters.
@@ -429,13 +443,13 @@ namespace NppModelica
             callGraphToolStripMenuItem.Checked = true;
             generateCallGraph();
             String filename = System.IO.Path.Combine(dataPath, "temp.svg");
-            if(System.IO.File.Exists(filename))
+            if (System.IO.File.Exists(filename))
                 System.Diagnostics.Process.Start(filename);
         }
 
         private void callGraphToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(callGraphToolStripMenuItem.Checked)
+            if (callGraphToolStripMenuItem.Checked)
                 generateCallGraph();
         }
 
@@ -514,6 +528,12 @@ namespace NppModelica
                     return;
                 }
             }
+        }
+
+        private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            string file = (string)listBox1.Items[listBox1.SelectedIndex];
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fullfilename), file)));
         }
     }
 }
