@@ -67,6 +67,10 @@ namespace NppModelica
             uniontypeToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "uniontype", 1, Main.iniFilePath) != 0);
             functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "function", 1, Main.iniFilePath) != 0);
 
+            searchToolStripMenuItem.Checked = functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "search", 1, Main.iniFilePath) != 0);
+            consoleToolStripMenuItem.Checked = functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "console", 0, Main.iniFilePath) != 0);
+            currentFolderToolStripMenuItem.Checked = functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "explorer", 0, Main.iniFilePath) != 0);
+
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
             splitContainer3.Panel1Collapsed = !currentFolderToolStripMenuItem.Checked;
@@ -78,16 +82,19 @@ namespace NppModelica
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Win32.WritePrivateProfileString("General", "search", searchToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
         }
 
         private void consoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Win32.WritePrivateProfileString("General", "console", consoleToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
         }
 
         private void currentFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Win32.WritePrivateProfileString("General", "explorer", currentFolderToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             splitContainer3.Panel1Collapsed = !currentFolderToolStripMenuItem.Checked;
         }
 
@@ -207,6 +214,12 @@ namespace NppModelica
         {
             if (e.KeyCode == Keys.Return)
                 treeView1_DoubleClick(sender, null);
+        }
+
+        private void listBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return)
+                listBox1_MouseDoubleClick(sender, null);
         }
 
         private string getText()
