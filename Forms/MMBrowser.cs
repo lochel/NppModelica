@@ -620,6 +620,7 @@ namespace NppModelica
 
                 treeViewExplorer.Nodes.Clear();
                 treeViewExplorer.Nodes.Add(rootNode);
+                treeViewExplorer.Sort();
             }
 
             listBox1.Items.Clear();
