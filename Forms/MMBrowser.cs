@@ -11,7 +11,10 @@ namespace NppModelica
 {
     public partial class MMBrowser : Form
     {
-        private String fullfilename = "";
+        private String path = "";
+        private String parentPath = "";
+        private String explorerPath = "";
+        private String filename = "";
         private String source = "";
         private MetaModelica.Scope mmScope = null;
         private Susan.Scope tplScope = null;
@@ -67,14 +70,12 @@ namespace NppModelica
             uniontypeToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "uniontype", 1, Main.iniFilePath) != 0);
             functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "function", 1, Main.iniFilePath) != 0);
 
-            searchToolStripMenuItem.Checked = functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "search", 1, Main.iniFilePath) != 0);
-            consoleToolStripMenuItem.Checked = functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "console", 0, Main.iniFilePath) != 0);
-            currentFolderToolStripMenuItem.Checked = functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "explorer", 0, Main.iniFilePath) != 0);
-
+            searchToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "search", 1, Main.iniFilePath);
+            consoleToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "console", 0, Main.iniFilePath);
+            
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
-            splitContainer3.Panel1Collapsed = !currentFolderToolStripMenuItem.Checked;
-
+            
             Main.initialized = true;
 
             updateOutline(true);
@@ -90,12 +91,6 @@ namespace NppModelica
         {
             Win32.WritePrivateProfileString("General", "console", consoleToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
-        }
-
-        private void currentFolderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Win32.WritePrivateProfileString("General", "explorer", currentFolderToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
-            splitContainer3.Panel1Collapsed = !currentFolderToolStripMenuItem.Checked;
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -239,21 +234,18 @@ namespace NppModelica
 
         private void updateOutline(Boolean parseSource)
         {
-            StringBuilder currentDirectory = new StringBuilder(Win32.MAX_PATH);
-            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDIRECTORY, Win32.MAX_PATH, currentDirectory);
-            StringBuilder filename = new StringBuilder(Win32.MAX_PATH);
-            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETFILENAME, Win32.MAX_PATH, filename);
-
             treeView1.Nodes.Clear();
 
             richTextBox1.Text = "";
             toolStripStatusLabel1.Text = "";
 
-            fullfilename = System.IO.Path.Combine(currentDirectory.ToString(), filename.ToString());
+            String fullfilename = System.IO.Path.Combine(path, filename);
+            String extension = System.IO.Path.GetExtension(filename);
+
             if (System.IO.File.Exists(fullfilename) == false)
                 return;
 
-            if (fullfilename.Substring(fullfilename.Length - 3) != ".mo" && fullfilename.Substring(fullfilename.Length - 4) != ".tpl")
+            if (extension != ".mo" && extension != ".tpl")
                 return;
 
             try
@@ -262,13 +254,13 @@ namespace NppModelica
                 {
                     source = getText();
 
-                    if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                    if (extension == ".mo")
                     {
                         mmScope = new MetaModelica.Scope();
                         mmLexer = new MetaModelica.Parser.Lexer(source, MetaModelica.Parser.Version.MetaModelica, true);
                     }
 
-                    if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                    if (extension == ".tpl")
                     {
                         tplScope = new Susan.Scope();
                         tplLexer = new Susan.Parser.Lexer(source, true);
@@ -276,9 +268,9 @@ namespace NppModelica
 
                     try
                     {
-                        if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                        if (extension == ".mo")
                             mmScope.loadSource(mmLexer.tokenList);
-                        if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                        if (extension == ".tpl")
                             tplScope.loadSource(tplLexer.tokenList);
                     }
                     catch (Exception e)
@@ -287,9 +279,9 @@ namespace NppModelica
                         throw e;
                     }
 
-                    if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                    if (extension == ".mo")
                         toolStripStatusLabel1.Text = mmLexer.tokenList.Count + " tokens | " + mmLexer.numberOfErrors + " errors";
-                    if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                    if (extension == ".tpl")
                         toolStripStatusLabel1.Text = tplLexer.tokenList.Count + " tokens | " + tplLexer.numberOfErrors + " errors";
                 }
             }
@@ -301,27 +293,22 @@ namespace NppModelica
             }
 
             treeView1.BeginUpdate();
-            if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+            if (extension == ".mo")
                 treeView1.Nodes.AddRange(mmScope.getTreeNodes(constantToolStripMenuItem.Checked, typesToolStripMenuItem.Checked, recordToolStripMenuItem.Checked, uniontypeToolStripMenuItem.Checked, functionToolStripMenuItem.Checked, publicOnlyToolStripMenuItem.Checked, textBox1.Text));
-            if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+            if (extension == ".tpl")
                 treeView1.Nodes.AddRange(tplScope.getTreeNodes(textBox1.Text));
             treeView1.Sort();
             treeView1.EndUpdate();
-
-            listBox1.Items.Clear();
-            String path = System.IO.Path.GetDirectoryName(fullfilename);
-            String ext = System.IO.Path.GetExtension(fullfilename);
-
-            string[] files = System.IO.Directory.GetFiles(path, "*" + ext);
-            foreach (string file in files)
-                listBox1.Items.Add(System.IO.Path.GetFileName(file));
         }
 
         private void generateCallGraph()
         {
             if (callGraphToolStripMenuItem.Checked)
             {
-                if (fullfilename.Substring(fullfilename.Length - 3) == ".mo")
+                String fullfilename = System.IO.Path.Combine(path, filename);
+                String extension = System.IO.Path.GetExtension(filename);
+
+                if (extension == ".mo")
                 {
                     foreach (MetaModelica.Package p in mmScope.packages.Values)
                     {
@@ -362,7 +349,7 @@ namespace NppModelica
                     }
                 }
 
-                if (fullfilename.Substring(fullfilename.Length - 4) == ".tpl")
+                if (extension == ".tpl")
                 {
                     foreach (Susan.Package p in tplScope.packages.Values)
                     {
@@ -405,12 +392,48 @@ namespace NppModelica
             }
         }
 
+        private String updateFileAndPath()
+        {
+            StringBuilder filename = new StringBuilder(Win32.MAX_PATH);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETFILENAME, Win32.MAX_PATH, filename);
+            return filename.ToString();
+        }
+
+
+        private void updateFilename()
+        {
+            StringBuilder currentDirectory = new StringBuilder(Win32.MAX_PATH);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDIRECTORY, Win32.MAX_PATH, currentDirectory);
+            StringBuilder currentFile = new StringBuilder(Win32.MAX_PATH);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETFILENAME, Win32.MAX_PATH, currentFile);
+            
+            Boolean pathChanged = path != currentDirectory.ToString();
+            Boolean filenChanged = filename != currentFile.ToString();
+            
+            path = currentDirectory.ToString();
+            filename = currentFile.ToString();
+
+            try
+            {
+                Boolean parentPathChanged = parentPath != new System.IO.DirectoryInfo(path).Parent.FullName;
+                parentPath = new System.IO.DirectoryInfo(path).Parent.FullName;
+
+                if (parentPathChanged)
+                    updateExplorer(true);
+            }
+            catch { }
+        }
+
         public void notification(SCNotification nc)
         {
-            if ((nc.nmhdr.code == (uint)NppMsg.NPPN_BUFFERACTIVATED) || (nc.nmhdr.code == (uint)NppMsg.NPPN_FILESAVED))
+            switch(nc.nmhdr.code)
             {
-                updateOutline(true);
-                generateCallGraph();
+                case (uint)NppMsg.NPPN_BUFFERACTIVATED:
+                case (uint)NppMsg.NPPN_FILESAVED:
+                    updateFilename();
+                    updateOutline(true);
+                    generateCallGraph();
+                    break;
             }
         }
 
@@ -507,6 +530,11 @@ namespace NppModelica
             updateOutline(false);
         }
 
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+            updateExplorer(false);
+        }
+
         private void latestReleaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/lochel/NppModelica/releases/latest");
@@ -546,7 +574,61 @@ namespace NppModelica
         private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             string file = (string)listBox1.Items[listBox1.SelectedIndex];
-            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(fullfilename), file)));
+            if(System.IO.File.Exists(System.IO.Path.Combine(explorerPath, file)))
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(System.IO.Path.Combine(explorerPath, file)));
+        }
+
+        private void MMBrowser_Resize(object sender, EventArgs e)
+        {
+            textBox2.Width = this.Width - 45;
+        }
+
+        TreeNode getDirectoryNode(string path)
+        {
+            TreeNode node = new TreeNode();
+            node.Text = new System.IO.DirectoryInfo(path).Name;
+            node.Tag = path;
+
+            foreach (string dir in System.IO.Directory.GetDirectories(path))
+                node.Nodes.Add(getDirectoryNode(dir));
+
+            return node;
+        }
+
+        private void treeViewExplorer_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            explorerPath = (string)treeViewExplorer.SelectedNode.Tag;
+            updateExplorer(false);
+        }
+
+        private void updateExplorer(bool updateTree)
+        {
+            if (updateTree)
+            {
+                String fullfilename = System.IO.Path.Combine(path, filename);
+                String extension = System.IO.Path.GetExtension(filename);
+
+                TreeNode rootNode = new TreeNode();
+                rootNode.Text = new System.IO.DirectoryInfo(parentPath).Name;
+                rootNode.Tag = parentPath;
+                rootNode.ToolTipText = parentPath;
+
+                foreach (string dir in System.IO.Directory.GetDirectories(parentPath))
+                    rootNode.Nodes.Add(getDirectoryNode(dir));
+
+                rootNode.Expand();
+
+                treeViewExplorer.Nodes.Clear();
+                treeViewExplorer.Nodes.Add(rootNode);
+            }
+
+            listBox1.Items.Clear();
+            foreach (string file in System.IO.Directory.GetFiles(explorerPath))
+            {
+                String short_filename = System.IO.Path.GetFileName(file);
+                if(short_filename.ToLower().Contains(textBox2.Text.ToLower()))
+                    listBox1.Items.Add(short_filename);
+            }
         }
     }
 }
