@@ -608,10 +608,7 @@ namespace NppModelica
             Boolean parentPathChanged = parentPath != new System.IO.DirectoryInfo(path).Parent.FullName;
             parentPath = new System.IO.DirectoryInfo(path).Parent.FullName;
 
-            if (!parentPathChanged)
-                return;
-
-            if (updateTree)
+            if (updateTree && parentPathChanged)
             {
                 TreeNode rootNode = new TreeNode();
                 rootNode.Text = new System.IO.DirectoryInfo(parentPath).Name;
