@@ -415,11 +415,7 @@ namespace NppModelica
 
             try
             {
-                Boolean parentPathChanged = parentPath != new System.IO.DirectoryInfo(path).Parent.FullName;
-                parentPath = new System.IO.DirectoryInfo(path).Parent.FullName;
-
-                if (parentPathChanged)
-                    updateExplorer(true);
+                updateExplorer(true);
             }
             catch { }
         }
@@ -603,11 +599,20 @@ namespace NppModelica
 
         private void updateExplorer(bool updateTree)
         {
+            String fullfilename = System.IO.Path.Combine(path, filename);
+            String extension = System.IO.Path.GetExtension(filename);
+
+            if (extension != ".mo" && extension != ".tpl")
+                return;
+
+            Boolean parentPathChanged = parentPath != new System.IO.DirectoryInfo(path).Parent.FullName;
+            parentPath = new System.IO.DirectoryInfo(path).Parent.FullName;
+
+            if (!parentPathChanged)
+                return;
+
             if (updateTree)
             {
-                String fullfilename = System.IO.Path.Combine(path, filename);
-                String extension = System.IO.Path.GetExtension(filename);
-
                 TreeNode rootNode = new TreeNode();
                 rootNode.Text = new System.IO.DirectoryInfo(parentPath).Name;
                 rootNode.Tag = parentPath;
