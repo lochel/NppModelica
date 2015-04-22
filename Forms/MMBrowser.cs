@@ -108,7 +108,7 @@ namespace NppModelica
                 if (treeView1.SelectedNode.Tag == null)
                     return;
 
-                if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Package")
+                if (treeView1.SelectedNode.Tag is MetaModelica.Package)
                 {
                     MetaModelica.Package pcg = (MetaModelica.Package)treeView1.SelectedNode.Tag;
                     treeView1.SelectedNode.Expand();
@@ -121,7 +121,7 @@ namespace NppModelica
 
                     richTextBox1.Text = "package " + pcg.name + ":\n" + pcg.description;
                 }
-                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Function")
+                else if (treeView1.SelectedNode.Tag is MetaModelica.Function)
                 {
                     MetaModelica.Function fcn = (MetaModelica.Function)treeView1.SelectedNode.Tag;
 
@@ -133,7 +133,7 @@ namespace NppModelica
 
                     richTextBox1.Text = "function " + fcn.name + ":\n" + fcn.description;
                 }
-                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Uniontype")
+                else if (treeView1.SelectedNode.Tag is MetaModelica.Uniontype)
                 {
                     MetaModelica.Uniontype uty = (MetaModelica.Uniontype)treeView1.SelectedNode.Tag;
 
@@ -145,7 +145,7 @@ namespace NppModelica
 
                     richTextBox1.Text = "uniontype " + uty.name;
                 }
-                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Record")
+                else if (treeView1.SelectedNode.Tag is MetaModelica.Record)
                 {
                     MetaModelica.Record rcd = (MetaModelica.Record)treeView1.SelectedNode.Tag;
 
@@ -157,7 +157,7 @@ namespace NppModelica
 
                     richTextBox1.Text = "record " + rcd.name;
                 }
-                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Constant")
+                else if (treeView1.SelectedNode.Tag is MetaModelica.Constant)
                 {
                     MetaModelica.Constant cst = (MetaModelica.Constant)treeView1.SelectedNode.Tag;
 
@@ -169,7 +169,7 @@ namespace NppModelica
 
                     richTextBox1.Text = "constant " + cst.name;
                 }
-                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "MetaModelica.Type")
+                else if (treeView1.SelectedNode.Tag is MetaModelica.Type)
                 {
                     MetaModelica.Type typ = (MetaModelica.Type)treeView1.SelectedNode.Tag;
 
@@ -181,7 +181,7 @@ namespace NppModelica
 
                     richTextBox1.Text = "constant " + typ.name;
                 }
-                else if (treeView1.SelectedNode.Tag.GetType().ToString() == "Susan.Template")
+                else if (treeView1.SelectedNode.Tag is Susan.Template)
                 {
                     Susan.Template tpl = (Susan.Template)treeView1.SelectedNode.Tag;
 
