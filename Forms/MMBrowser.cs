@@ -413,11 +413,7 @@ namespace NppModelica
             path = currentDirectory.ToString();
             filename = currentFile.ToString();
 
-            try
-            {
-                updateExplorer(true);
-            }
-            catch { }
+            updateExplorer(true);
         }
 
         public void notification(SCNotification nc)
