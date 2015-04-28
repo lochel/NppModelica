@@ -626,11 +626,14 @@ namespace NppModelica
             }
 
             listBox1.Items.Clear();
-            foreach (string file in System.IO.Directory.GetFiles(explorerPath))
+            if (System.IO.Directory.Exists(explorerPath))
             {
-                String short_filename = System.IO.Path.GetFileName(file);
-                if(short_filename.ToLower().Contains(textBox2.Text.ToLower()))
-                    listBox1.Items.Add(short_filename);
+                foreach (string file in System.IO.Directory.GetFiles(explorerPath))
+                {
+                    String short_filename = System.IO.Path.GetFileName(file);
+                    if (short_filename.ToLower().Contains(textBox2.Text.ToLower()))
+                        listBox1.Items.Add(short_filename);
+                }
             }
         }
     }
