@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
@@ -24,6 +25,29 @@ namespace NppModelica
 
         private List<String> allFiles = new List<string>();
         private Dictionary<string, string> outlineFilter = new Dictionary<string, string>();
+        private Dictionary<string, Point> scrollBarPosition = new Dictionary<string, Point>();
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto)]
+        public static extern int GetScrollPos(int hWnd, int nBar);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
+
+        private const int SB_HORZ = 0x0;
+        private const int SB_VERT = 0x1;
+
+        private Point GetTreeViewScrollPos(TreeView treeView)
+        {
+            return new Point(
+                GetScrollPos((int)treeView.Handle, SB_HORZ),
+                GetScrollPos((int)treeView.Handle, SB_VERT));
+        }
+
+        private void SetTreeViewScrollPos(TreeView treeView, Point scrollPosition)
+        {
+            SetScrollPos((IntPtr)treeView.Handle, SB_HORZ, scrollPosition.X, true);
+            SetScrollPos((IntPtr)treeView.Handle, SB_VERT, scrollPosition.Y, true);
+        }
 
         public MMBrowser()
         {
@@ -444,6 +468,7 @@ namespace NppModelica
             {
                 case (uint)NppMsg.NPPN_BUFFERACTIVATED:
                 case (uint)NppMsg.NPPN_FILESAVED:
+                    scrollBarPosition[path + " - " + filename] = GetTreeViewScrollPos(treeView1);
                     updateFilename();
                     // recover filter
                     if (outlineFilter.ContainsKey(path + " - " + filename))
@@ -451,6 +476,8 @@ namespace NppModelica
                     else
                         textBox1.Text = "";
                     updateOutline(true);
+                    if (scrollBarPosition.ContainsKey(path + " - " + filename))
+                        SetTreeViewScrollPos(treeView1, scrollBarPosition[path + " - " + filename]);
                     break;
             }
         }
