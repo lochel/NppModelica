@@ -63,7 +63,7 @@ namespace NppModelica
 
             publicOnlyToolStripButton.Checked = publicOnlyToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "publicOnly", 0, Main.iniFilePath) != 0);
             constantToolStripButton.Checked = constantToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "constant", 1, Main.iniFilePath) != 0);
-            typeToolStripButton.Checked = typesToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "type", 1, Main.iniFilePath) != 0);
+            typeToolStripButton.Checked = typeToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "type", 1, Main.iniFilePath) != 0);
             recordToolStripButton.Checked = recordToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "record", 1, Main.iniFilePath) != 0);
             uniontypeToolStripButton.Checked = uniontypeToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "uniontype", 1, Main.iniFilePath) != 0);
             functionToolStripButton.Checked = functionToolStripMenuItem.Checked = (Win32.GetPrivateProfileInt("General", "function", 1, Main.iniFilePath) != 0);
@@ -299,7 +299,7 @@ namespace NppModelica
 
             treeView1.BeginUpdate();
             if (extension == ".mo")
-                treeView1.Nodes.AddRange(mmScope.getTreeNodes(constantToolStripMenuItem.Checked, typesToolStripMenuItem.Checked, recordToolStripMenuItem.Checked, uniontypeToolStripMenuItem.Checked, functionToolStripMenuItem.Checked, publicOnlyToolStripMenuItem.Checked, textBox1.Text));
+                treeView1.Nodes.AddRange(mmScope.getTreeNodes(constantToolStripMenuItem.Checked, typeToolStripMenuItem.Checked, recordToolStripMenuItem.Checked, uniontypeToolStripMenuItem.Checked, functionToolStripMenuItem.Checked, publicOnlyToolStripMenuItem.Checked, textBox1.Text));
             if (extension == ".tpl")
                 treeView1.Nodes.AddRange(tplScope.getTreeNodes(textBox1.Text));
             treeView1.Sort();
@@ -526,13 +526,13 @@ namespace NppModelica
             updateOutline(false);
         }
 
-        private void typesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void typeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            typesToolStripMenuItem.Checked = !typesToolStripMenuItem.Checked;
+            typeToolStripMenuItem.Checked = !typeToolStripMenuItem.Checked;
             typeToolStripButton.Checked = !typeToolStripButton.Checked;
             typeToolStripButton.Image = typeToolStripButton.Checked ? NppModelica.Properties.Resources.type_public : NppModelica.Properties.Resources.type;
 
-            Win32.WritePrivateProfileString("General", "type", typesToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
+            Win32.WritePrivateProfileString("General", "type", typeToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             updateOutline(false);
         }
 
@@ -674,7 +674,7 @@ namespace NppModelica
 
         private void typeToolStripButton_Click(object sender, EventArgs e)
         {
-            typesToolStripMenuItem_Click(sender, e);
+            typeToolStripMenuItem_Click(sender, e);
         }
 
         private void recordToolStripButton_Click(object sender, EventArgs e)

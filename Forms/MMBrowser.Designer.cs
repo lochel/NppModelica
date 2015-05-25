@@ -45,7 +45,7 @@
             this.vIEWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.publicOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.typesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.typeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.callGraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.callGraphViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -210,7 +210,7 @@
             this.publicOnlyToolStripMenuItem,
             this.toolStripSeparator3,
             this.constantToolStripMenuItem,
-            this.typesToolStripMenuItem,
+            this.typeToolStripMenuItem,
             this.recordToolStripMenuItem,
             this.uniontypeToolStripMenuItem,
             this.functionToolStripMenuItem,
@@ -236,12 +236,12 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(219, 6);
             // 
-            // typesToolStripMenuItem
+            // typeToolStripMenuItem
             // 
-            this.typesToolStripMenuItem.Name = "typesToolStripMenuItem";
-            this.typesToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
-            this.typesToolStripMenuItem.Text = "Type";
-            this.typesToolStripMenuItem.Click += new System.EventHandler(this.typesToolStripMenuItem_Click);
+            this.typeToolStripMenuItem.Name = "typeToolStripMenuItem";
+            this.typeToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
+            this.typeToolStripMenuItem.Text = "Type";
+            this.typeToolStripMenuItem.Click += new System.EventHandler(this.typeToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -523,7 +523,7 @@
             this.functionToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 33);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(187, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(156, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // publicOnlyToolStripButton
@@ -655,7 +655,7 @@
         private System.Windows.Forms.ToolStripMenuItem hELPToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem constantToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem vIEWToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem typesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem typeToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.SplitContainer splitContainer2;
