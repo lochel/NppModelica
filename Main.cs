@@ -18,7 +18,7 @@ namespace NppModelica
 #else
         internal const string DebugSuffix = "";
 #endif
-        internal const string PluginVersion = PluginVersionNumber + DebugSuffix;
+        internal const string PluginVersion = PluginVersionNumber + "+dev" + DebugSuffix;
         static public string iniFilePath = null;
         public static MMBrowser frmMMBrowser = null;
         public static Boolean initialized = false;
