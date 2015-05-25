@@ -60,8 +60,6 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.treeViewExplorer = new System.Windows.Forms.TreeView();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -97,9 +95,6 @@
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
-            this.splitContainer4.Panel1.SuspendLayout();
-            this.splitContainer4.Panel2.SuspendLayout();
-            this.splitContainer4.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -278,7 +273,7 @@
             this.hELPToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(396, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(239, 33);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.Visible = false;
@@ -291,7 +286,7 @@
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(396, 88);
+            this.richTextBox1.Size = new System.Drawing.Size(396, 92);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             this.richTextBox1.WordWrap = false;
@@ -314,7 +309,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer2.Size = new System.Drawing.Size(382, 644);
+            this.splitContainer2.Size = new System.Drawing.Size(382, 673);
             this.splitContainer2.SplitterDistance = 25;
             this.splitContainer2.SplitterWidth = 2;
             this.splitContainer2.TabIndex = 1;
@@ -337,7 +332,7 @@
             this.treeView1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.treeView1.Name = "treeView1";
             this.treeView1.ShowNodeToolTips = true;
-            this.treeView1.Size = new System.Drawing.Size(382, 617);
+            this.treeView1.Size = new System.Drawing.Size(382, 646);
             this.treeView1.TabIndex = 0;
             this.treeView1.DoubleClick += new System.EventHandler(this.treeView1_DoubleClick);
             this.treeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView1_KeyDown);
@@ -359,8 +354,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.richTextBox1);
             this.splitContainer1.Panel2MinSize = 0;
-            this.splitContainer1.Size = new System.Drawing.Size(396, 777);
-            this.splitContainer1.SplitterDistance = 683;
+            this.splitContainer1.Size = new System.Drawing.Size(396, 810);
+            this.splitContainer1.SplitterDistance = 712;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -372,8 +367,9 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(396, 683);
+            this.tabControl1.Size = new System.Drawing.Size(396, 712);
             this.tabControl1.TabIndex = 1;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -381,7 +377,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(388, 650);
+            this.tabPage1.Size = new System.Drawing.Size(388, 679);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Outline";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -392,7 +388,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 29);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(388, 650);
+            this.tabPage2.Size = new System.Drawing.Size(388, 679);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Explorer";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -414,8 +410,8 @@
             // 
             // splitContainer3.Panel2
             // 
-            this.splitContainer3.Panel2.Controls.Add(this.splitContainer4);
-            this.splitContainer3.Size = new System.Drawing.Size(382, 644);
+            this.splitContainer3.Panel2.Controls.Add(this.listBox1);
+            this.splitContainer3.Size = new System.Drawing.Size(382, 673);
             this.splitContainer3.SplitterDistance = 25;
             this.splitContainer3.SplitterWidth = 2;
             this.splitContainer3.TabIndex = 2;
@@ -430,35 +426,6 @@
             this.textBox2.TabIndex = 0;
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
-            // splitContainer4
-            // 
-            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer4.Name = "splitContainer4";
-            this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer4.Panel1
-            // 
-            this.splitContainer4.Panel1.Controls.Add(this.treeViewExplorer);
-            // 
-            // splitContainer4.Panel2
-            // 
-            this.splitContainer4.Panel2.Controls.Add(this.listBox1);
-            this.splitContainer4.Size = new System.Drawing.Size(382, 617);
-            this.splitContainer4.SplitterDistance = 103;
-            this.splitContainer4.TabIndex = 1;
-            // 
-            // treeViewExplorer
-            // 
-            this.treeViewExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewExplorer.Font = new System.Drawing.Font("Courier New", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.treeViewExplorer.Location = new System.Drawing.Point(0, 0);
-            this.treeViewExplorer.Name = "treeViewExplorer";
-            this.treeViewExplorer.ShowNodeToolTips = true;
-            this.treeViewExplorer.Size = new System.Drawing.Size(382, 103);
-            this.treeViewExplorer.TabIndex = 0;
-            this.treeViewExplorer.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewExplorer_AfterSelect);
-            // 
             // listBox1
             // 
             this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -467,7 +434,7 @@
             this.listBox1.ItemHeight = 22;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(382, 510);
+            this.listBox1.Size = new System.Drawing.Size(382, 646);
             this.listBox1.Sorted = true;
             this.listBox1.TabIndex = 0;
             this.listBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox1_KeyDown);
@@ -508,7 +475,7 @@
             this.toolStripContainer1.ContentPanel.AutoScroll = true;
             this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
             this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(396, 777);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(396, 810);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
@@ -543,7 +510,7 @@
             this.consoleToolStripButton,
             this.toolStripSeparator7,
             this.graphvizSettingsToolStripButton});
-            this.toolStrip1.Location = new System.Drawing.Point(3, 33);
+            this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(289, 25);
             this.toolStrip1.TabIndex = 1;
@@ -709,9 +676,6 @@
             this.splitContainer3.Panel1.PerformLayout();
             this.splitContainer3.Panel2.ResumeLayout(false);
             this.splitContainer3.ResumeLayout(false);
-            this.splitContainer4.Panel1.ResumeLayout(false);
-            this.splitContainer4.Panel2.ResumeLayout(false);
-            this.splitContainer4.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
@@ -767,8 +731,6 @@
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.SplitContainer splitContainer4;
-        private System.Windows.Forms.TreeView treeViewExplorer;
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton publicOnlyToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;

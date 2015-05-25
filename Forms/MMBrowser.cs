@@ -11,15 +11,17 @@ namespace NppModelica
     {
         private String path = "";
         private String parentPath = "";
-        private String explorerPath = "";
         private String filename = "";
         private String source = "";
         private MetaModelica.Scope mmScope = null;
         private Susan.Scope tplScope = null;
         private MetaModelica.Parser.Lexer mmLexer = null;
         private Susan.Parser.Lexer tplLexer = null;
+        private Boolean isExplorerActive = false;
 
         private String dataPath = "";
+
+        private List<String> allFiles = new List<string>();
 
         public MMBrowser()
         {
@@ -607,8 +609,8 @@ namespace NppModelica
         private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             string file = (string)listBox1.Items[listBox1.SelectedIndex];
-            if(System.IO.File.Exists(System.IO.Path.Combine(explorerPath, file)))
-                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(System.IO.Path.Combine(explorerPath, file)));
+            if(System.IO.File.Exists(System.IO.Path.Combine(parentPath, file)))
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(System.IO.Path.Combine(parentPath, file)));
         }
 
         private void MMBrowser_Resize(object sender, EventArgs e)
@@ -616,26 +618,11 @@ namespace NppModelica
             textBox2.Width = this.Width - 45;
         }
 
-        TreeNode getDirectoryNode(string path)
-        {
-            TreeNode node = new TreeNode();
-            node.Text = new System.IO.DirectoryInfo(path).Name;
-            node.Tag = path;
-
-            foreach (string dir in System.IO.Directory.GetDirectories(path))
-                node.Nodes.Add(getDirectoryNode(dir));
-
-            return node;
-        }
-
-        private void treeViewExplorer_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            explorerPath = (string)treeViewExplorer.SelectedNode.Tag;
-            updateExplorer(false);
-        }
-
         private void updateExplorer(bool updateTree)
         {
+            if (!isExplorerActive)
+                return;
+
             String fullfilename = System.IO.Path.Combine(path, filename);
             String extension = System.IO.Path.GetExtension(filename);
 
@@ -645,32 +632,27 @@ namespace NppModelica
             Boolean parentPathChanged = parentPath != new System.IO.DirectoryInfo(path).Parent.FullName;
             parentPath = new System.IO.DirectoryInfo(path).Parent.FullName;
 
-            if (updateTree && parentPathChanged)
+            if (parentPathChanged && updateTree)
             {
-                TreeNode rootNode = new TreeNode();
-                rootNode.Text = new System.IO.DirectoryInfo(parentPath).Name;
-                rootNode.Tag = parentPath;
-                rootNode.ToolTipText = parentPath;
+                allFiles = new List<string>();
 
-                foreach (string dir in System.IO.Directory.GetDirectories(parentPath))
-                    rootNode.Nodes.Add(getDirectoryNode(dir));
+                allFiles.AddRange(System.IO.Directory.GetFiles(parentPath, "*.tpl", System.IO.SearchOption.AllDirectories));
 
-                rootNode.Expand();
-
-                treeViewExplorer.Nodes.Clear();
-                treeViewExplorer.Nodes.Add(rootNode);
-                treeViewExplorer.Sort();
+                foreach(string file in System.IO.Directory.GetFiles(parentPath, "*.mo", System.IO.SearchOption.AllDirectories))
+                {
+                    if (!allFiles.Contains(file.Substring(0, file.Length - 3) + ".tpl") && !file.Contains("\\Compiler\\boot\\"))
+                    {
+                        allFiles.Add(file);
+                    }
+                }
             }
 
             listBox1.Items.Clear();
-            if (System.IO.Directory.Exists(explorerPath))
+            foreach (string file in allFiles)
             {
-                foreach (string file in System.IO.Directory.GetFiles(explorerPath))
-                {
-                    String short_filename = System.IO.Path.GetFileName(file);
-                    if (short_filename.ToLower().Contains(textBox2.Text.ToLower()))
-                        listBox1.Items.Add(short_filename);
-                }
+                String short_filename = file.Substring(parentPath.Length+1);
+                if (short_filename.ToLower().Contains(textBox2.Text.ToLower()))
+                    listBox1.Items.Add(short_filename);
             }
         }
 
@@ -727,6 +709,14 @@ namespace NppModelica
         private void graphvizSettingsToolStripButton_Click(object sender, EventArgs e)
         {
             changeDirectoryToolStripMenuItem_Click(sender, e);
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            isExplorerActive = (tabControl1.SelectedIndex == 1);
+
+            if (isExplorerActive)
+                updateExplorer(true);
         }
     }
 }
