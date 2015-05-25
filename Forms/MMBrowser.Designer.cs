@@ -65,22 +65,25 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
             this.publicOnlyToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.constantToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.typeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.recordToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.uniontypeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.functionToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.callGraphToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.callGraphViewerToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.consoleToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.graphvizSettingsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
             this.menuStrip1.SuspendLayout();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -278,6 +281,7 @@
             this.menuStrip1.Size = new System.Drawing.Size(396, 33);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.Visible = false;
             // 
             // richTextBox1
             // 
@@ -479,11 +483,18 @@
             // 
             this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(396, 30);
             this.statusStrip1.TabIndex = 0;
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(64, 25);
+            this.toolStripStatusLabel2.Text = "[vXXX]";
             // 
             // toolStripContainer1
             // 
@@ -529,31 +540,13 @@
             this.callGraphViewerToolStripButton,
             this.toolStripSeparator6,
             this.searchToolStripButton,
-            this.consoleToolStripButton});
+            this.consoleToolStripButton,
+            this.toolStripSeparator7,
+            this.graphvizSettingsToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 33);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(291, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(289, 25);
             this.toolStrip1.TabIndex = 1;
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
-            // 
-            // fileSystemWatcher1
-            // 
-            this.fileSystemWatcher1.EnableRaisingEvents = true;
-            this.fileSystemWatcher1.SynchronizingObject = this;
             // 
             // publicOnlyToolStripButton
             // 
@@ -564,6 +557,11 @@
             this.publicOnlyToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.publicOnlyToolStripButton.Text = "public only";
             this.publicOnlyToolStripButton.Click += new System.EventHandler(this.publicOnlyToolStripButton_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
             // constantToolStripButton
             // 
@@ -615,6 +613,11 @@
             this.functionToolStripButton.Text = "function";
             this.functionToolStripButton.Click += new System.EventHandler(this.functionToolStripButton_Click);
             // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
             // callGraphToolStripButton
             // 
             this.callGraphToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -635,6 +638,11 @@
             this.callGraphViewerToolStripButton.Text = "call graph viewer";
             this.callGraphViewerToolStripButton.Click += new System.EventHandler(this.callGraphViewerToolStripButton_Click);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
             // searchToolStripButton
             // 
             this.searchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -654,6 +662,26 @@
             this.consoleToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.consoleToolStripButton.Text = "console";
             this.consoleToolStripButton.Click += new System.EventHandler(this.consoleToolStripButton_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+            // 
+            // graphvizSettingsToolStripButton
+            // 
+            this.graphvizSettingsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.graphvizSettingsToolStripButton.Image = global::NppModelica.Properties.Resources.graphvizSettings;
+            this.graphvizSettingsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.graphvizSettingsToolStripButton.Name = "graphvizSettingsToolStripButton";
+            this.graphvizSettingsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.graphvizSettingsToolStripButton.Text = "graphviz settings";
+            this.graphvizSettingsToolStripButton.Click += new System.EventHandler(this.graphvizSettingsToolStripButton_Click);
+            // 
+            // fileSystemWatcher1
+            // 
+            this.fileSystemWatcher1.EnableRaisingEvents = true;
+            this.fileSystemWatcher1.SynchronizingObject = this;
             // 
             // MMBrowser
             // 
@@ -755,6 +783,9 @@
         private System.Windows.Forms.ToolStripButton callGraphToolStripButton;
         private System.Windows.Forms.ToolStripButton callGraphViewerToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripButton graphvizSettingsToolStripButton;
 
     }
 }

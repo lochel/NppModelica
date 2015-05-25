@@ -25,6 +25,8 @@ namespace NppModelica
         {
             InitializeComponent();
 
+            toolStripStatusLabel2.Text = "[v" + Main.PluginVersion + "]";
+
             // Load the images in an ImageList.
             ImageList myImageList = new ImageList();
             myImageList.Images.Add(Properties.Resources.package);           //  0
@@ -720,6 +722,11 @@ namespace NppModelica
         private void callGraphViewerToolStripButton_Click(object sender, EventArgs e)
         {
             callGraphViewerToolStripMenuItem_Click(sender, e);
+        }
+
+        private void graphvizSettingsToolStripButton_Click(object sender, EventArgs e)
+        {
+            changeDirectoryToolStripMenuItem_Click(sender, e);
         }
     }
 }
