@@ -67,14 +67,20 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.publicOnlyToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
+            this.publicOnlyToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.constantToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.typeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.recordToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.uniontypeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.functionToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
+            this.callGraphToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.callGraphViewerToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.consoleToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -139,7 +145,6 @@
             // 
             // consoleToolStripMenuItem
             // 
-            this.consoleToolStripMenuItem.CheckOnClick = true;
             this.consoleToolStripMenuItem.Name = "consoleToolStripMenuItem";
             this.consoleToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
             this.consoleToolStripMenuItem.Text = "Console";
@@ -148,7 +153,6 @@
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Checked = true;
-            this.searchToolStripMenuItem.CheckOnClick = true;
             this.searchToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
             this.searchToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
@@ -250,7 +254,6 @@
             // 
             // callGraphToolStripMenuItem
             // 
-            this.callGraphToolStripMenuItem.CheckOnClick = true;
             this.callGraphToolStripMenuItem.Name = "callGraphToolStripMenuItem";
             this.callGraphToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
             this.callGraphToolStripMenuItem.Text = "Call Graph";
@@ -520,11 +523,37 @@
             this.typeToolStripButton,
             this.recordToolStripButton,
             this.uniontypeToolStripButton,
-            this.functionToolStripButton});
+            this.functionToolStripButton,
+            this.toolStripSeparator5,
+            this.callGraphToolStripButton,
+            this.callGraphViewerToolStripButton,
+            this.toolStripSeparator6,
+            this.searchToolStripButton,
+            this.consoleToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 33);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(156, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(291, 25);
             this.toolStrip1.TabIndex = 1;
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
+            // fileSystemWatcher1
+            // 
+            this.fileSystemWatcher1.EnableRaisingEvents = true;
+            this.fileSystemWatcher1.SynchronizingObject = this;
             // 
             // publicOnlyToolStripButton
             // 
@@ -533,13 +562,8 @@
             this.publicOnlyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.publicOnlyToolStripButton.Name = "publicOnlyToolStripButton";
             this.publicOnlyToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.publicOnlyToolStripButton.Text = "toolStripButton1";
+            this.publicOnlyToolStripButton.Text = "public only";
             this.publicOnlyToolStripButton.Click += new System.EventHandler(this.publicOnlyToolStripButton_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
             // constantToolStripButton
             // 
@@ -548,7 +572,7 @@
             this.constantToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.constantToolStripButton.Name = "constantToolStripButton";
             this.constantToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.constantToolStripButton.Text = "toolStripButton2";
+            this.constantToolStripButton.Text = "constant";
             this.constantToolStripButton.Click += new System.EventHandler(this.constantToolStripButton_Click);
             // 
             // typeToolStripButton
@@ -558,7 +582,7 @@
             this.typeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.typeToolStripButton.Name = "typeToolStripButton";
             this.typeToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.typeToolStripButton.Text = "toolStripButton3";
+            this.typeToolStripButton.Text = "type";
             this.typeToolStripButton.Click += new System.EventHandler(this.typeToolStripButton_Click);
             // 
             // recordToolStripButton
@@ -568,7 +592,7 @@
             this.recordToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.recordToolStripButton.Name = "recordToolStripButton";
             this.recordToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.recordToolStripButton.Text = "toolStripButton4";
+            this.recordToolStripButton.Text = "record";
             this.recordToolStripButton.Click += new System.EventHandler(this.recordToolStripButton_Click);
             // 
             // uniontypeToolStripButton
@@ -578,7 +602,7 @@
             this.uniontypeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.uniontypeToolStripButton.Name = "uniontypeToolStripButton";
             this.uniontypeToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.uniontypeToolStripButton.Text = "toolStripButton5";
+            this.uniontypeToolStripButton.Text = "uniontype";
             this.uniontypeToolStripButton.Click += new System.EventHandler(this.uniontypeToolStripButton_Click);
             // 
             // functionToolStripButton
@@ -588,13 +612,48 @@
             this.functionToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.functionToolStripButton.Name = "functionToolStripButton";
             this.functionToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.functionToolStripButton.Text = "toolStripButton6";
+            this.functionToolStripButton.Text = "function";
             this.functionToolStripButton.Click += new System.EventHandler(this.functionToolStripButton_Click);
             // 
-            // fileSystemWatcher1
+            // callGraphToolStripButton
             // 
-            this.fileSystemWatcher1.EnableRaisingEvents = true;
-            this.fileSystemWatcher1.SynchronizingObject = this;
+            this.callGraphToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.callGraphToolStripButton.Image = global::NppModelica.Properties.Resources.callGraph;
+            this.callGraphToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.callGraphToolStripButton.Name = "callGraphToolStripButton";
+            this.callGraphToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.callGraphToolStripButton.Text = "call graph";
+            this.callGraphToolStripButton.Click += new System.EventHandler(this.callGraphToolStripButton_Click);
+            // 
+            // callGraphViewerToolStripButton
+            // 
+            this.callGraphViewerToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.callGraphViewerToolStripButton.Image = global::NppModelica.Properties.Resources.callGraphViewer;
+            this.callGraphViewerToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.callGraphViewerToolStripButton.Name = "callGraphViewerToolStripButton";
+            this.callGraphViewerToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.callGraphViewerToolStripButton.Text = "call graph viewer";
+            this.callGraphViewerToolStripButton.Click += new System.EventHandler(this.callGraphViewerToolStripButton_Click);
+            // 
+            // searchToolStripButton
+            // 
+            this.searchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.searchToolStripButton.Image = global::NppModelica.Properties.Resources.search;
+            this.searchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.searchToolStripButton.Name = "searchToolStripButton";
+            this.searchToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.searchToolStripButton.Text = "search";
+            this.searchToolStripButton.Click += new System.EventHandler(this.searchToolStripButton_Click);
+            // 
+            // consoleToolStripButton
+            // 
+            this.consoleToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.consoleToolStripButton.Image = global::NppModelica.Properties.Resources.console;
+            this.consoleToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.consoleToolStripButton.Name = "consoleToolStripButton";
+            this.consoleToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.consoleToolStripButton.Text = "console";
+            this.consoleToolStripButton.Click += new System.EventHandler(this.consoleToolStripButton_Click);
             // 
             // MMBrowser
             // 
@@ -690,6 +749,12 @@
         private System.Windows.Forms.ToolStripButton recordToolStripButton;
         private System.Windows.Forms.ToolStripButton uniontypeToolStripButton;
         private System.Windows.Forms.ToolStripButton functionToolStripButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripButton searchToolStripButton;
+        private System.Windows.Forms.ToolStripButton consoleToolStripButton;
+        private System.Windows.Forms.ToolStripButton callGraphToolStripButton;
+        private System.Windows.Forms.ToolStripButton callGraphViewerToolStripButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 
     }
 }

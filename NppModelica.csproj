@@ -116,6 +116,18 @@
   <ItemGroup>
     <None Include="Resources\uniontype_public.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\console.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\callGraph.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\callGraphViewer.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

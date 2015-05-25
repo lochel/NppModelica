@@ -75,8 +75,8 @@ namespace NppModelica
             uniontypeToolStripButton.Image = uniontypeToolStripButton.Checked ? NppModelica.Properties.Resources.uniontype_public : NppModelica.Properties.Resources.uniontype;
             functionToolStripButton.Image = functionToolStripButton.Checked ? NppModelica.Properties.Resources.function_public : NppModelica.Properties.Resources.function;
 
-            searchToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "search", 1, Main.iniFilePath);
-            consoleToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "console", 0, Main.iniFilePath);
+            searchToolStripButton.Checked = searchToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "search", 1, Main.iniFilePath);
+            consoleToolStripButton.Checked = consoleToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "console", 0, Main.iniFilePath);
             
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
@@ -88,12 +88,18 @@ namespace NppModelica
 
         private void searchToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            searchToolStripMenuItem.Checked = !searchToolStripMenuItem.Checked;
+            searchToolStripButton.Checked = !searchToolStripButton.Checked;
+
             Win32.WritePrivateProfileString("General", "search", searchToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
         }
 
         private void consoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            consoleToolStripMenuItem.Checked = !consoleToolStripMenuItem.Checked;
+            consoleToolStripButton.Checked = !consoleToolStripButton.Checked;
+            
             Win32.WritePrivateProfileString("General", "console", consoleToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
         }
@@ -473,7 +479,8 @@ namespace NppModelica
 
         private void callGraphViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            callGraphToolStripMenuItem.Checked = true;
+            callGraphToolStripButton.Checked = callGraphToolStripMenuItem.Checked = true;
+
             generateCallGraph();
             String filename = System.IO.Path.Combine(dataPath, "temp.svg");
             if (System.IO.File.Exists(filename))
@@ -482,6 +489,9 @@ namespace NppModelica
 
         private void callGraphToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            callGraphToolStripMenuItem.Checked = !callGraphToolStripMenuItem.Checked;
+            callGraphToolStripButton.Checked = !callGraphToolStripButton.Checked;
+
             if (callGraphToolStripMenuItem.Checked)
                 generateCallGraph();
         }
@@ -690,6 +700,26 @@ namespace NppModelica
         private void functionToolStripButton_Click(object sender, EventArgs e)
         {
             functionToolStripMenuItem_Click(sender, e);
+        }
+
+        private void searchToolStripButton_Click(object sender, EventArgs e)
+        {
+            searchToolStripMenuItem_Click(sender, e);
+        }
+
+        private void consoleToolStripButton_Click(object sender, EventArgs e)
+        {
+            consoleToolStripMenuItem_Click(sender, e);
+        }
+
+        private void callGraphToolStripButton_Click(object sender, EventArgs e)
+        {
+            callGraphToolStripMenuItem_Click(sender, e);
+        }
+
+        private void callGraphViewerToolStripButton_Click(object sender, EventArgs e)
+        {
+            callGraphViewerToolStripMenuItem_Click(sender, e);
         }
     }
 }
