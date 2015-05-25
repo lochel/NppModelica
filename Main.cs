@@ -12,13 +12,13 @@ namespace NppModelica
     class Main
     {
         internal const string PluginName = "NppModelica";
-        internal const string PluginVersionNumber = "0.2.3";
+        internal const string PluginVersionNumber = "0.2.4";
 #if DEBUG
         internal const string DebugSuffix = " (DEBUG)";
 #else
         internal const string DebugSuffix = "";
 #endif
-        internal const string PluginVersion = PluginVersionNumber + "+dev" + DebugSuffix;
+        internal const string PluginVersion = PluginVersionNumber + DebugSuffix;
         static public string iniFilePath = null;
         public static MMBrowser frmMMBrowser = null;
         public static Boolean initialized = false;
