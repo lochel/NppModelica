@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
 using NppPluginNET;
+using System.Net;
 
 namespace NppModelica
 {
@@ -717,6 +718,58 @@ namespace NppModelica
 
             if (isExplorerActive)
                 updateExplorer(true);
+        }
+
+        private void updateToolStripButton_Click(object sender, EventArgs e)
+        {
+            string[] ids = Main.PluginVersionNumber.Split('.');
+            bool done = false;
+            for (int i = 0; i < ids.Length && !done; ++i)
+            {
+                String version = "";
+                for (int j = 0; j < ids.Length; ++j)
+                {
+                    if (j < i)
+                        version += "." + Convert.ToString(ids[j]);
+                    else if (j == i)
+                        version += "." + Convert.ToString(Convert.ToInt32(ids[j]) + 1);
+                    else
+                        version += ".0";
+                }
+                version = version.Substring(1);
+                try
+                {
+                    using (WebClient client = new WebClient())
+                    {
+                        client.DownloadFile("https://github.com/lochel/NppModelica/releases/download/v" + version + "/NppModelica.dll", System.IO.Path.Combine(dataPath, "NppModelica_new.dll"));
+                    }
+                    done = true;
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            if (done)
+            {
+                System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat"), @"cd " + dataPath + @"
+taskkill /IM notepad++.exe
+timeout 1
+move /Y NppModelica_new.dll ..\..\NppModelica.dll
+start ..\..\..\notepad++.exe
+");
+
+                Process process = new Process();
+                process.StartInfo.FileName = "cmd.exe";
+                process.StartInfo.Verb = "runas";
+                process.StartInfo.WorkingDirectory = dataPath;
+                process.StartInfo.Arguments = "/c " + System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat");
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.Start();
+
+            }
+            else
+                MessageBox.Show("You are already using the latest version.", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
