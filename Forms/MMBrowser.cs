@@ -610,8 +610,11 @@ namespace NppModelica
         private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             string file = (string)listBox1.Items[listBox1.SelectedIndex];
-            if(System.IO.File.Exists(System.IO.Path.Combine(parentPath, file)))
+            if (System.IO.File.Exists(System.IO.Path.Combine(parentPath, file)))
+            {
                 Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(System.IO.Path.Combine(parentPath, file)));
+                tabControl1.SelectedIndex = 0;
+            }
         }
 
         private void MMBrowser_Resize(object sender, EventArgs e)
