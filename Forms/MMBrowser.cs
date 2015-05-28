@@ -80,24 +80,14 @@ namespace NppModelica
             uniontypeToolStripButton.Image = uniontypeToolStripButton.Checked ? NppModelica.Properties.Resources.uniontype_public : NppModelica.Properties.Resources.uniontype;
             functionToolStripButton.Image = functionToolStripButton.Checked ? NppModelica.Properties.Resources.function_public : NppModelica.Properties.Resources.function;
 
-            searchToolStripButton.Checked = searchToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "search", 1, Main.iniFilePath);
             consoleToolStripButton.Checked = consoleToolStripMenuItem.Checked = 0 != Win32.GetPrivateProfileInt("General", "console", 0, Main.iniFilePath);
             
-            splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
+            splitContainer2.Panel1Collapsed = false;
             splitContainer1.Panel2Collapsed = !consoleToolStripMenuItem.Checked;
             
             Main.initialized = true;
 
             updateOutline(true);
-        }
-
-        private void searchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            searchToolStripMenuItem.Checked = !searchToolStripMenuItem.Checked;
-            searchToolStripButton.Checked = !searchToolStripButton.Checked;
-
-            Win32.WritePrivateProfileString("General", "search", searchToolStripMenuItem.Checked ? "1" : "0", Main.iniFilePath);
-            splitContainer2.Panel1Collapsed = !searchToolStripMenuItem.Checked;
         }
 
         private void consoleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -688,11 +678,6 @@ namespace NppModelica
         private void functionToolStripButton_Click(object sender, EventArgs e)
         {
             functionToolStripMenuItem_Click(sender, e);
-        }
-
-        private void searchToolStripButton_Click(object sender, EventArgs e)
-        {
-            searchToolStripMenuItem_Click(sender, e);
         }
 
         private void consoleToolStripButton_Click(object sender, EventArgs e)

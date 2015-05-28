@@ -35,7 +35,6 @@
             this.changeDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sETTINGSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.consoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.functionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uniontypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,7 +77,6 @@
             this.callGraphToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.callGraphViewerToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.searchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.consoleToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.graphvizSettingsToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -150,15 +148,6 @@
             this.consoleToolStripMenuItem.Text = "Console";
             this.consoleToolStripMenuItem.Click += new System.EventHandler(this.consoleToolStripMenuItem_Click);
             // 
-            // searchToolStripMenuItem
-            // 
-            this.searchToolStripMenuItem.Checked = true;
-            this.searchToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
-            this.searchToolStripMenuItem.Text = "Search";
-            this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -222,7 +211,6 @@
             this.callGraphToolStripMenuItem,
             this.callGraphViewerToolStripMenuItem,
             this.toolStripSeparator2,
-            this.searchToolStripMenuItem,
             this.consoleToolStripMenuItem});
             this.vIEWToolStripMenuItem.Name = "vIEWToolStripMenuItem";
             this.vIEWToolStripMenuItem.Size = new System.Drawing.Size(66, 29);
@@ -273,9 +261,9 @@
             this.vIEWToolStripMenuItem,
             this.sETTINGSToolStripMenuItem,
             this.hELPToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Location = new System.Drawing.Point(0, 25);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(239, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(396, 33);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.Visible = false;
@@ -509,14 +497,13 @@
             this.callGraphToolStripButton,
             this.callGraphViewerToolStripButton,
             this.toolStripSeparator6,
-            this.searchToolStripButton,
             this.consoleToolStripButton,
             this.toolStripSeparator7,
             this.graphvizSettingsToolStripButton,
             this.updateToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(334, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(280, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // publicOnlyToolStripButton
@@ -614,16 +601,6 @@
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
-            // searchToolStripButton
-            // 
-            this.searchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.searchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("searchToolStripButton.Image")));
-            this.searchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.searchToolStripButton.Name = "searchToolStripButton";
-            this.searchToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.searchToolStripButton.Text = "search";
-            this.searchToolStripButton.Click += new System.EventHandler(this.searchToolStripButton_Click);
-            // 
             // consoleToolStripButton
             // 
             this.consoleToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -712,7 +689,6 @@
         private System.Windows.Forms.ToolStripMenuItem changeWorkspaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sETTINGSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem consoleToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem functionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uniontypeToolStripMenuItem;
@@ -754,7 +730,6 @@
         private System.Windows.Forms.ToolStripButton uniontypeToolStripButton;
         private System.Windows.Forms.ToolStripButton functionToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripButton searchToolStripButton;
         private System.Windows.Forms.ToolStripButton consoleToolStripButton;
         private System.Windows.Forms.ToolStripButton callGraphToolStripButton;
         private System.Windows.Forms.ToolStripButton callGraphViewerToolStripButton;
