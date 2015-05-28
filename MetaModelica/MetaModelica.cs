@@ -59,13 +59,16 @@ namespace MetaModelica
         public String name;
         public Parser.Position startPosition;
 
+        protected const Int32 iConstant = 6;
+        protected const Int32 iConstantPublic = 7;
+
         public Constant(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
 
             // skip type
-            while (i < tokenList.Count && !tokenList[i].isSYMBOL("="))
+            while (i < tokenList.Count && !tokenList[i].isSYMBOL("=") && !tokenList[i].isSYMBOL(";"))
                 i++;
             i--;
 
@@ -82,15 +85,11 @@ namespace MetaModelica
             if (i < tokenList.Count && tokenList[i].isSYMBOL("="))
             {
                 i++;
-            }
-            else
-            {
-                throw new Exception("SYMBOL(\"=\") expected: got " + tokenList[i].ToString());
-            }
 
-            // skip value
-            while (i < tokenList.Count && !tokenList[i].isSYMBOL(";"))
-                i++;
+                // skip value
+                while (i < tokenList.Count && !tokenList[i].isSYMBOL(";"))
+                    i++;
+            }
 
             if (i < tokenList.Count && tokenList[i].isSYMBOL(";"))
             {
@@ -106,12 +105,34 @@ namespace MetaModelica
 
             length = i - startIndex;
         }
+
+        public TreeNode[] getTreeNodes(Boolean isPublic, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            if (name.ToLower().Contains(filter))
+            {
+                TreeNode cstNode = new TreeNode();
+                cstNode.Text = name;
+                cstNode.Tag = this;
+                cstNode.ImageIndex = isPublic ? iConstantPublic : iConstant;
+                cstNode.SelectedImageIndex = isPublic ? iConstantPublic : iConstant;
+
+                nodes.Add(cstNode);
+            }
+
+            return nodes.ToArray();
+        }
     }
 
     public class Type
     {
         public String name;
         public Parser.Position startPosition;
+
+        protected const Int32 iType = 8;
+        protected const Int32 iTypePublic = 9;
 
         public Type(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
@@ -155,6 +176,25 @@ namespace MetaModelica
 
             length = i - startIndex;
         }
+
+        public TreeNode[] getTreeNodes(Boolean isPublic, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            if (name.ToLower().Contains(filter))
+            {
+                TreeNode typNode = new TreeNode();
+                typNode.Text = name;
+                typNode.Tag = this;
+                typNode.ImageIndex = isPublic ? iTypePublic : iType;
+                typNode.SelectedImageIndex = isPublic ? iTypePublic : iType;
+
+                nodes.Add(typNode);
+            }
+
+            return nodes.ToArray();
+        }
     }
 
     public class Record
@@ -162,6 +202,9 @@ namespace MetaModelica
         public String name;
         public Parser.Position startPosition;
         public String description;
+
+        protected const Int32 iRecord = 10;
+        protected const Int32 iRecordPublic = 11;
 
         public Record(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
@@ -210,6 +253,25 @@ namespace MetaModelica
 
             length = i - startIndex;
         }
+
+        public TreeNode[] getTreeNodes(Boolean isPublic, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            if (name.ToLower().Contains(filter))
+            {
+                TreeNode rcdNode = new TreeNode();
+                rcdNode.Text = name;
+                rcdNode.Tag = this;
+                rcdNode.ImageIndex = isPublic ? iRecordPublic : iRecord;
+                rcdNode.SelectedImageIndex = isPublic ? iRecordPublic : iRecord;
+
+                nodes.Add(rcdNode);
+            }
+
+            return nodes.ToArray();
+        }
     }
 
     public class Uniontype
@@ -218,6 +280,9 @@ namespace MetaModelica
         public Parser.Position startPosition;
         public Hashtable records;
         public String description;
+
+        protected const Int32 iUniontype = 4;
+        protected const Int32 iUniontypePublic = 5;
 
         public Uniontype(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
@@ -278,6 +343,35 @@ namespace MetaModelica
 
             length = i - startIndex;
         }
+
+        public TreeNode[] getTreeNodes(Boolean isPublic, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            TreeNode utyNode = new TreeNode();
+            utyNode.Text = name;
+            utyNode.Tag = this;
+            utyNode.ImageIndex = isPublic ? iUniontypePublic : iUniontype;
+            utyNode.SelectedImageIndex = isPublic ? iUniontypePublic : iUniontype;
+
+            bool emptyUty = true;
+            foreach (MetaModelica.Record rcd in records.Values)
+            {
+                if (name.ToLower().Contains(filter) || rcd.name.ToLower().Contains(filter))
+                {
+                    utyNode.Nodes.AddRange(rcd.getTreeNodes(isPublic, ""));
+                    emptyUty = false;
+                }
+            }
+
+            if (name.ToLower().Contains(filter) || !emptyUty)
+            {
+                nodes.Add(utyNode);
+            }
+
+            return nodes.ToArray();
+        }
     }
 
     public class Function
@@ -286,6 +380,9 @@ namespace MetaModelica
         public String description;
         public Hashtable functionCalls;
         public Parser.Position startPosition;
+
+        protected const Int32 iFunction = 2;
+        protected const Int32 iFunctionPublic = 3;
 
         public Function(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         //string name, Boolean isPublic, string description, string parent, Parser.Position startPosition)
@@ -359,12 +456,32 @@ namespace MetaModelica
 
             length = i - startIndex;
         }
+
+        public TreeNode[] getTreeNodes(Boolean isPublic, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            if (name.ToLower().Contains(filter))
+            {
+                TreeNode fcnNode = new TreeNode();
+                fcnNode.Text = name;
+                fcnNode.Tag = this;
+                fcnNode.ImageIndex = isPublic ? iFunctionPublic : iFunction;
+                fcnNode.SelectedImageIndex = isPublic ? iFunctionPublic : iFunction;
+
+                nodes.Add(fcnNode);
+            }
+
+            return nodes.ToArray();
+        }
     }
 
     public class Package
     {
         public String name;
         public Boolean isEncapsulated;
+        public Boolean isInterface;
         public String description;
         public Parser.Position startPosition;
 
@@ -383,6 +500,9 @@ namespace MetaModelica
         public Hashtable protectedUniontypes;
         public Hashtable protectedFunctions;
         public Hashtable protectedPackages;
+
+        protected const Int32 iPackage = 0;
+        protected const Int32 iPackagePublic = 1;
 
         public Package(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
@@ -409,10 +529,20 @@ namespace MetaModelica
             if (i < tokenList.Count && tokenList[i].isIDENT("encapsulated"))
             {
                 isEncapsulated = true;
+                isInterface = false;
+                i++;
+            }
+            else if (i < tokenList.Count && tokenList[i].isIDENT("interface"))
+            {
+                isEncapsulated = false;
+                isInterface = true;
                 i++;
             }
             else
+            {
                 isEncapsulated = false;
+                isInterface = false;
+            }
 
             if (i < tokenList.Count && tokenList[i].isIDENT("package"))
                 i++;
@@ -460,7 +590,7 @@ namespace MetaModelica
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Package: Error in constant: " + e.Message);
+                        throw new Exception("Package: Error in constant {" + tokenList[i].startPosition + "}: " + e.Message);
                     }
                 }
                 else if (i < tokenList.Count && tokenList[i].isIDENT("constant"))
@@ -476,7 +606,7 @@ namespace MetaModelica
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Package: Error in constant: " + e.Message);
+                        throw new Exception("Package: Error in constant {" + tokenList[i].startPosition + "}: " + e.Message);
                     }
                 }
                 else if (i < tokenList.Count && tokenList[i].isIDENT("type"))
@@ -544,7 +674,8 @@ namespace MetaModelica
                     }
                 }
                 else if ((i < tokenList.Count && tokenList[i].isIDENT("package")) ||
-                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")) ||
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("interface") && tokenList[i + 1].isIDENT("package")))
                 {
                     try
                     {
@@ -571,12 +702,12 @@ namespace MetaModelica
                 i++;
             else
                 throw new Exception("expected: IDENT(\"end\"), got: " + tokenList[i].ToString());
-
+            
             if (i < tokenList.Count && tokenList[i].isIDENT(name))
                 i++;
             else
                 throw new Exception("expected: IDENT(\"" + name + "\"), got: " + tokenList[i].ToString());
-
+            
             if (i < tokenList.Count && tokenList[i].isSYMBOL(";"))
                 i++;
             else
@@ -664,6 +795,85 @@ namespace MetaModelica
             }
 
             return dotSource;
+        }
+
+        public TreeNode[] getTreeNodes(Boolean isPublic, Boolean showConstants, Boolean showTypes, Boolean showRecords, Boolean showUniontypes, Boolean showFunctions, Boolean showPublicOnly, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            TreeNode node = new TreeNode();
+            node.Name = name;
+            node.Text = name;
+            node.Tag = this;
+            node.ImageIndex = isPublic ? iPackagePublic : iPackage;
+            node.SelectedImageIndex = isPublic ? iPackagePublic : iPackage;
+
+            foreach (MetaModelica.Package p in publicPackages.Values)
+                node.Nodes.AddRange(p.getTreeNodes(true, showConstants, showTypes, showRecords, showUniontypes, showFunctions, showPublicOnly, filter));
+
+            foreach (MetaModelica.Package p in protectedPackages.Values)
+                node.Nodes.AddRange(p.getTreeNodes(false, showConstants, showTypes, showRecords, showUniontypes, showFunctions, showPublicOnly, filter));
+
+            if (showFunctions)
+            {
+                foreach (MetaModelica.Function fcn in publicFunctions.Values)
+                    node.Nodes.AddRange(fcn.getTreeNodes(true, filter));
+            }
+            if (showFunctions && !showPublicOnly)
+            {
+                foreach (MetaModelica.Function fcn in protectedFunctions.Values)
+                    node.Nodes.AddRange(fcn.getTreeNodes(false, filter));
+            }
+
+            if (showTypes)
+            {
+                foreach (MetaModelica.Type typ in publicTypes.Values)
+                    node.Nodes.AddRange(typ.getTreeNodes(true, filter));
+            }
+            if (showFunctions && !showPublicOnly)
+            {
+                foreach (MetaModelica.Type typ in protectedTypes.Values)
+                    node.Nodes.AddRange(typ.getTreeNodes(false, filter));
+            }
+
+            if (showRecords)
+            {
+                foreach (MetaModelica.Record rcd in publicRecords.Values)
+                    node.Nodes.AddRange(rcd.getTreeNodes(true, filter));
+            }
+            if (showRecords && !showPublicOnly)
+            {
+                foreach (MetaModelica.Record rcd in protectedRecords.Values)
+                    node.Nodes.AddRange(rcd.getTreeNodes(false, filter));
+            }
+
+            if (showConstants)
+            {
+                foreach (MetaModelica.Constant cst in publicConstants.Values)
+                    node.Nodes.AddRange(cst.getTreeNodes(true, filter));
+            }
+            if (showConstants && !showPublicOnly)
+            {
+                foreach (MetaModelica.Constant cst in protectedConstants.Values)
+                    node.Nodes.AddRange(cst.getTreeNodes(false, filter));
+            }
+
+            if (showUniontypes)
+            {
+                foreach (MetaModelica.Uniontype uty in publicUniontypes.Values)
+                    node.Nodes.AddRange(uty.getTreeNodes(true, filter));
+            }
+            if (showUniontypes && !showPublicOnly)
+            {
+                foreach (MetaModelica.Uniontype uty in protectedUniontypes.Values)
+                    node.Nodes.AddRange(uty.getTreeNodes(false, filter));
+            }
+
+            node.Expand();
+            nodes.Add(node);
+
+            return nodes.ToArray();
         }
     }
 
@@ -763,7 +973,8 @@ namespace MetaModelica
                     throw new Exception("function");
                 }
                 else if ((i < tokenList.Count && tokenList[i].isIDENT("package")) ||
-                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")) ||
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("interface") && tokenList[i + 1].isIDENT("package")))
                 {
                     try
                     {
@@ -834,297 +1045,29 @@ namespace MetaModelica
             if (showConstants)
             {
                 foreach (MetaModelica.Constant cst in constants.Values)
-                {
-                    if (cst.name.ToLower().Contains(filter))
-                    {
-                        TreeNode cstNode = new TreeNode();
-                        cstNode.Text = cst.name;
-                        cstNode.Tag = cst;
-                        cstNode.ImageIndex = iConstantPublic;
-                        cstNode.SelectedImageIndex = iConstantPublic;
-
-                        nodes.Add(cstNode);
-                    }
-                }
+                    nodes.AddRange(cst.getTreeNodes(true, filter));
             }
 
             if (showTypes)
             {
                 foreach (MetaModelica.Type typ in types.Values)
-                {
-                    if (typ.name.ToLower().Contains(filter))
-                    {
-                        TreeNode typNode = new TreeNode();
-                        typNode.Text = typ.name;
-                        typNode.Tag = typ;
-                        typNode.ImageIndex = iTypePublic;
-                        typNode.SelectedImageIndex = iTypePublic;
-
-                        nodes.Add(typNode);
-                    }
-                }
+                    nodes.AddRange(typ.getTreeNodes(true, filter));
             }
 
             if (showRecords)
             {
                 foreach (MetaModelica.Record rcd in records.Values)
-                {
-                    if (rcd.name.ToLower().Contains(filter))
-                    {
-                        TreeNode rcdNode = new TreeNode();
-                        rcdNode.Text = rcd.name;
-                        rcdNode.Tag = rcd;
-                        rcdNode.ImageIndex = iRecordPublic;
-                        rcdNode.SelectedImageIndex = iRecordPublic;
-
-                        nodes.Add(rcdNode);
-                    }
-                }
+                    nodes.AddRange(rcd.getTreeNodes(true, filter));
             }
 
             if (showUniontypes)
             {
                 foreach (MetaModelica.Uniontype uty in uniontypes.Values)
-                {
-                    TreeNode utyNode = new TreeNode();
-                    utyNode.Text = uty.name;
-                    utyNode.Tag = uty;
-                    utyNode.ImageIndex = iUniontypePublic;
-                    utyNode.SelectedImageIndex = iUniontypePublic;
-
-                    bool emptyUty = true;
-                    foreach (MetaModelica.Record rcd in uty.records.Values)
-                    {
-                        if (uty.name.ToLower().Contains(filter) || rcd.name.ToLower().Contains(filter))
-                        {
-                            TreeNode rcdNode = new TreeNode();
-                            rcdNode.Text = rcd.name;
-                            rcdNode.Tag = rcd;
-                            rcdNode.ImageIndex = iRecordPublic;
-                            rcdNode.SelectedImageIndex = iRecordPublic;
-
-                            utyNode.Nodes.Add(rcdNode);
-                            emptyUty = false;
-                        }
-                    }
-
-                    if (uty.name.ToLower().Contains(filter) || !emptyUty)
-                    {
-                        nodes.Add(utyNode);
-                    }
-                }
+                    nodes.AddRange(uty.getTreeNodes(true, filter));
             }
 
             foreach (MetaModelica.Package p in packages.Values)
-            {
-                TreeNode node = new TreeNode();
-                node.Name = p.name;
-                node.Text = p.name;
-                node.Tag = p;
-                node.ImageIndex = iPackagePublic;
-                node.SelectedImageIndex = iPackagePublic;
-
-                if (showFunctions)
-                {
-                    foreach (MetaModelica.Function fcn in p.publicFunctions.Values)
-                    {
-                        if (fcn.name.ToLower().Contains(filter))
-                        {
-                            TreeNode fcnNode = new TreeNode();
-                            fcnNode.Text = fcn.name;
-                            fcnNode.Tag = fcn;
-                            fcnNode.ImageIndex = iFunctionPublic;
-                            fcnNode.SelectedImageIndex = iFunctionPublic;
-
-                            node.Nodes.Add(fcnNode);
-                        }
-                    }
-                }
-                if (showFunctions && !showPublicOnly)
-                {
-                    foreach (MetaModelica.Function fcn in p.protectedFunctions.Values)
-                    {
-                        if (fcn.name.ToLower().Contains(filter))
-                        {
-                            TreeNode fcnNode = new TreeNode();
-                            fcnNode.Text = fcn.name;
-                            fcnNode.Tag = fcn;
-                            fcnNode.ImageIndex = iFunction;
-                            fcnNode.SelectedImageIndex = iFunction;
-
-                            node.Nodes.Add(fcnNode);
-                        }
-                    }
-                }
-
-                if (showTypes)
-                {
-                    foreach (MetaModelica.Type typ in p.publicTypes.Values)
-                    {
-                        if (typ.name.ToLower().Contains(filter))
-                        {
-                            TreeNode typNode = new TreeNode();
-                            typNode.Text = typ.name;
-                            typNode.Tag = typ;
-                            typNode.ImageIndex = iTypePublic;
-                            typNode.SelectedImageIndex = iTypePublic;
-
-                            node.Nodes.Add(typNode);
-                        }
-                    }
-                }
-                if (showFunctions && !showPublicOnly)
-                {
-                    foreach (MetaModelica.Type typ in p.protectedTypes.Values)
-                    {
-                        if (typ.name.ToLower().Contains(filter))
-                        {
-                            TreeNode typNode = new TreeNode();
-                            typNode.Text = typ.name;
-                            typNode.Tag = typ;
-                            typNode.ImageIndex = iType;
-                            typNode.SelectedImageIndex = iType;
-
-                            node.Nodes.Add(typNode);
-                        }
-                    }
-                }
-
-                if (showRecords)
-                {
-                    foreach (MetaModelica.Record rcd in p.publicRecords.Values)
-                    {
-                        if (rcd.name.ToLower().Contains(filter))
-                        {
-                            TreeNode rcdNode = new TreeNode();
-                            rcdNode.Text = rcd.name;
-                            rcdNode.Tag = rcd;
-                            rcdNode.ImageIndex = iRecordPublic;
-                            rcdNode.SelectedImageIndex = iRecordPublic;
-
-                            node.Nodes.Add(rcdNode);
-                        }
-                    }
-                }
-                if (showRecords && !showPublicOnly)
-                {
-                    foreach (MetaModelica.Record rcd in p.protectedRecords.Values)
-                    {
-                        if (rcd.name.ToLower().Contains(filter))
-                        {
-                            TreeNode rcdNode = new TreeNode();
-                            rcdNode.Text = rcd.name;
-                            rcdNode.Tag = rcd;
-                            rcdNode.ImageIndex = iRecord;
-                            rcdNode.SelectedImageIndex = iRecord;
-
-                            node.Nodes.Add(rcdNode);
-                        }
-                    }
-                }
-
-                if (showConstants)
-                {
-                    foreach (MetaModelica.Constant cst in p.publicConstants.Values)
-                    {
-                        if (cst.name.ToLower().Contains(filter))
-                        {
-                            TreeNode cstNode = new TreeNode();
-                            cstNode.Text = cst.name;
-                            cstNode.Tag = cst;
-                            cstNode.ImageIndex = iConstantPublic;
-                            cstNode.SelectedImageIndex = iConstantPublic;
-
-                            node.Nodes.Add(cstNode);
-                        }
-                    }
-                }
-                if (showConstants && !showPublicOnly)
-                {
-                    foreach (MetaModelica.Constant cst in p.protectedConstants.Values)
-                    {
-                        if (cst.name.ToLower().Contains(filter))
-                        {
-                            TreeNode cstNode = new TreeNode();
-                            cstNode.Text = cst.name;
-                            cstNode.Tag = cst;
-                            cstNode.ImageIndex = iConstant;
-                            cstNode.SelectedImageIndex = iConstant;
-
-                            node.Nodes.Add(cstNode);
-                        }
-                    }
-                }
-
-                if (showUniontypes)
-                {
-                    foreach (MetaModelica.Uniontype uty in p.publicUniontypes.Values)
-                    {
-                        TreeNode utyNode = new TreeNode();
-                        utyNode.Text = uty.name;
-                        utyNode.Tag = uty;
-                        utyNode.ImageIndex = iUniontypePublic;
-                        utyNode.SelectedImageIndex = iUniontypePublic;
-
-                        bool emptyUty = true;
-
-                        foreach (MetaModelica.Record rcd in uty.records.Values)
-                        {
-                            if (uty.name.ToLower().Contains(filter) || rcd.name.ToLower().Contains(filter))
-                            {
-                                TreeNode rcdNode = new TreeNode();
-                                rcdNode.Text = rcd.name;
-                                rcdNode.Tag = rcd;
-                                rcdNode.ImageIndex = iRecordPublic;
-                                rcdNode.SelectedImageIndex = iRecordPublic;
-
-                                utyNode.Nodes.Add(rcdNode);
-                                emptyUty = false;
-                            }
-                        }
-
-                        if (uty.name.ToLower().Contains(filter) || !emptyUty)
-                        {
-                            node.Nodes.Add(utyNode);
-                        }
-                    }
-                }
-                if (showUniontypes && !showPublicOnly)
-                {
-                    foreach (MetaModelica.Uniontype uty in p.protectedUniontypes.Values)
-                    {
-                        TreeNode utyNode = new TreeNode();
-                        utyNode.Text = uty.name;
-                        utyNode.Tag = uty;
-                        utyNode.ImageIndex = iUniontype;
-                        utyNode.SelectedImageIndex = iUniontype;
-
-                        bool emptyUty = true;
-
-                        foreach (MetaModelica.Record rcd in uty.records.Values)
-                        {
-                            if (uty.name.ToLower().Contains(filter) || rcd.name.ToLower().Contains(filter))
-                            {
-                                TreeNode rcdNode = new TreeNode();
-                                rcdNode.Text = rcd.name;
-                                rcdNode.Tag = rcd;
-                                rcdNode.ImageIndex = iRecord;
-                                rcdNode.SelectedImageIndex = iRecord;
-
-                                utyNode.Nodes.Add(rcdNode);
-                            }
-                        }
-
-                        if (uty.name.ToLower().Contains(filter) || !emptyUty)
-                        {
-                            node.Nodes.Add(utyNode);
-                        }
-                    }
-                }
-
-                node.Expand();
-                nodes.Add(node);
-            }
+                nodes.AddRange(p.getTreeNodes(true, showConstants, showTypes, showRecords, showUniontypes, showFunctions, showPublicOnly, filter));
 
             return nodes.ToArray();
         }
