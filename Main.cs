@@ -12,7 +12,7 @@ namespace NppModelica
     class Main
     {
         internal const string PluginName = "NppModelica";
-        internal const string PluginVersionNumber = "0.2.4";
+        internal const string PluginVersionNumber = "1.0.0";
 #if DEBUG
         internal const string DebugSuffix = " (DEBUG)";
 #else
