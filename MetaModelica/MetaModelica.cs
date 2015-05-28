@@ -59,13 +59,16 @@ namespace MetaModelica
         public String name;
         public Parser.Position startPosition;
 
+        protected const Int32 iConstant = 6;
+        protected const Int32 iConstantPublic = 7;
+
         public Constant(List<Parser.Token> tokenList, Int32 i, out Int32 length)
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
 
             // skip type
-            while (i < tokenList.Count && !tokenList[i].isSYMBOL("="))
+            while (i < tokenList.Count && !tokenList[i].isSYMBOL("=") && !tokenList[i].isSYMBOL(";"))
                 i++;
             i--;
 
@@ -82,15 +85,11 @@ namespace MetaModelica
             if (i < tokenList.Count && tokenList[i].isSYMBOL("="))
             {
                 i++;
-            }
-            else
-            {
-                throw new Exception("SYMBOL(\"=\") expected: got " + tokenList[i].ToString());
-            }
 
-            // skip value
-            while (i < tokenList.Count && !tokenList[i].isSYMBOL(";"))
-                i++;
+                // skip value
+                while (i < tokenList.Count && !tokenList[i].isSYMBOL(";"))
+                    i++;
+            }
 
             if (i < tokenList.Count && tokenList[i].isSYMBOL(";"))
             {
@@ -105,6 +104,25 @@ namespace MetaModelica
             }
 
             length = i - startIndex;
+        }
+
+        public TreeNode[] getTreeNodes(Boolean isPublic, string filter)
+        {
+            List<TreeNode> nodes = new List<TreeNode>();
+            filter = filter.ToLower();
+
+            if (name.ToLower().Contains(filter))
+            {
+                TreeNode cstNode = new TreeNode();
+                cstNode.Text = name;
+                cstNode.Tag = this;
+                cstNode.ImageIndex = isPublic ? iConstantPublic : iConstant;
+                cstNode.SelectedImageIndex = isPublic ? iConstantPublic : iConstant;
+
+                nodes.Add(cstNode);
+            }
+
+            return nodes.ToArray();
         }
     }
 
@@ -365,6 +383,7 @@ namespace MetaModelica
     {
         public String name;
         public Boolean isEncapsulated;
+        public Boolean isInterface;
         public String description;
         public Parser.Position startPosition;
 
@@ -409,10 +428,20 @@ namespace MetaModelica
             if (i < tokenList.Count && tokenList[i].isIDENT("encapsulated"))
             {
                 isEncapsulated = true;
+                isInterface = false;
+                i++;
+            }
+            else if (i < tokenList.Count && tokenList[i].isIDENT("interface"))
+            {
+                isEncapsulated = false;
+                isInterface = true;
                 i++;
             }
             else
+            {
                 isEncapsulated = false;
+                isInterface = false;
+            }
 
             if (i < tokenList.Count && tokenList[i].isIDENT("package"))
                 i++;
@@ -460,7 +489,7 @@ namespace MetaModelica
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Package: Error in constant: " + e.Message);
+                        throw new Exception("Package: Error in constant {" + tokenList[i].startPosition + "}: " + e.Message);
                     }
                 }
                 else if (i < tokenList.Count && tokenList[i].isIDENT("constant"))
@@ -476,7 +505,7 @@ namespace MetaModelica
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Package: Error in constant: " + e.Message);
+                        throw new Exception("Package: Error in constant {" + tokenList[i].startPosition + "}: " + e.Message);
                     }
                 }
                 else if (i < tokenList.Count && tokenList[i].isIDENT("type"))
@@ -544,7 +573,8 @@ namespace MetaModelica
                     }
                 }
                 else if ((i < tokenList.Count && tokenList[i].isIDENT("package")) ||
-                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")) ||
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("interface") && tokenList[i + 1].isIDENT("package")))
                 {
                     try
                     {
@@ -571,12 +601,12 @@ namespace MetaModelica
                 i++;
             else
                 throw new Exception("expected: IDENT(\"end\"), got: " + tokenList[i].ToString());
-
+            
             if (i < tokenList.Count && tokenList[i].isIDENT(name))
                 i++;
             else
                 throw new Exception("expected: IDENT(\"" + name + "\"), got: " + tokenList[i].ToString());
-
+            
             if (i < tokenList.Count && tokenList[i].isSYMBOL(";"))
                 i++;
             else
@@ -763,7 +793,8 @@ namespace MetaModelica
                     throw new Exception("function");
                 }
                 else if ((i < tokenList.Count && tokenList[i].isIDENT("package")) ||
-                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")))
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("package")) ||
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("interface") && tokenList[i + 1].isIDENT("package")))
                 {
                     try
                     {
@@ -834,18 +865,7 @@ namespace MetaModelica
             if (showConstants)
             {
                 foreach (MetaModelica.Constant cst in constants.Values)
-                {
-                    if (cst.name.ToLower().Contains(filter))
-                    {
-                        TreeNode cstNode = new TreeNode();
-                        cstNode.Text = cst.name;
-                        cstNode.Tag = cst;
-                        cstNode.ImageIndex = iConstantPublic;
-                        cstNode.SelectedImageIndex = iConstantPublic;
-
-                        nodes.Add(cstNode);
-                    }
-                }
+                    nodes.AddRange(cst.getTreeNodes(true, filter));
             }
 
             if (showTypes)
@@ -923,6 +943,34 @@ namespace MetaModelica
                 node.Tag = p;
                 node.ImageIndex = iPackagePublic;
                 node.SelectedImageIndex = iPackagePublic;
+
+                foreach (MetaModelica.Package p1 in p.publicPackages.Values)
+                {
+                    if (p1.name.ToLower().Contains(filter))
+                    {
+                        TreeNode cstNode = new TreeNode();
+                        cstNode.Text = p1.name;
+                        cstNode.Tag = p1;
+                        cstNode.ImageIndex = iPackagePublic;
+                        cstNode.SelectedImageIndex = iPackagePublic;
+
+                        node.Nodes.Add(cstNode);
+                    }
+                }
+
+                foreach (MetaModelica.Package p1 in p.protectedPackages.Values)
+                {
+                    if (p1.name.ToLower().Contains(filter))
+                    {
+                        TreeNode cstNode = new TreeNode();
+                        cstNode.Text = p1.name;
+                        cstNode.Tag = p1;
+                        cstNode.ImageIndex = iPackage;
+                        cstNode.SelectedImageIndex = iPackage;
+
+                        node.Nodes.Add(cstNode);
+                    }
+                }
 
                 if (showFunctions)
                 {
@@ -1026,34 +1074,12 @@ namespace MetaModelica
                 if (showConstants)
                 {
                     foreach (MetaModelica.Constant cst in p.publicConstants.Values)
-                    {
-                        if (cst.name.ToLower().Contains(filter))
-                        {
-                            TreeNode cstNode = new TreeNode();
-                            cstNode.Text = cst.name;
-                            cstNode.Tag = cst;
-                            cstNode.ImageIndex = iConstantPublic;
-                            cstNode.SelectedImageIndex = iConstantPublic;
-
-                            node.Nodes.Add(cstNode);
-                        }
-                    }
+                        node.Nodes.AddRange(cst.getTreeNodes(true, filter));
                 }
                 if (showConstants && !showPublicOnly)
                 {
                     foreach (MetaModelica.Constant cst in p.protectedConstants.Values)
-                    {
-                        if (cst.name.ToLower().Contains(filter))
-                        {
-                            TreeNode cstNode = new TreeNode();
-                            cstNode.Text = cst.name;
-                            cstNode.Tag = cst;
-                            cstNode.ImageIndex = iConstant;
-                            cstNode.SelectedImageIndex = iConstant;
-
-                            node.Nodes.Add(cstNode);
-                        }
-                    }
+                        node.Nodes.AddRange(cst.getTreeNodes(false, filter));
                 }
 
                 if (showUniontypes)
