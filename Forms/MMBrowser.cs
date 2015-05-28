@@ -722,12 +722,15 @@ namespace NppModelica
 
         private void updateToolStripButton_Click(object sender, EventArgs e)
         {
+            updateToolStripButton.Enabled = false;
+
             string[] ids = Main.PluginVersionNumber.Split('.');
+            String version = "";
             bool done = false;
             for (int i = 0; i < ids.Length && !done; ++i)
             {
-                String version = "";
-                for (int j = 0; j < ids.Length; ++j)
+                version = "";
+                for (int j = 0; j < ids.Length && !done; ++j)
                 {
                     if (j < i)
                         version += "." + Convert.ToString(ids[j]);
@@ -752,24 +755,30 @@ namespace NppModelica
 
             if (done)
             {
-                System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat"), @"cd " + dataPath + @"
+                if (MessageBox.Show("Do you want to update version " + Main.PluginVersion + " to version " + version + "?\n\nPlease make sure that all your files are saved before you continue!\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                {
+                    System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat"), @"cd " + dataPath + @"
+for /f ""tokens=*"" %%f in ('wmic process where ""name='notepad++.exe'"" get ExecutablePath /value ^| find ""=""') do set ""%%f""
 taskkill /IM notepad++.exe
 timeout 1
-move /Y NppModelica_new.dll ..\..\NppModelica.dll
-start ..\..\..\notepad++.exe
+move /Y NppModelica_new.dll " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\NppModelica.dll
+start %ExecutablePath%
 ");
 
-                Process process = new Process();
-                process.StartInfo.FileName = "cmd.exe";
-                process.StartInfo.Verb = "runas";
-                process.StartInfo.WorkingDirectory = dataPath;
-                process.StartInfo.Arguments = "/c " + System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat");
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                process.Start();
+                    Process process = new Process();
+                    process.StartInfo.FileName = "cmd.exe";
+                    process.StartInfo.Verb = "runas";
+                    process.StartInfo.WorkingDirectory = dataPath;
+                    process.StartInfo.Arguments = "/c " + System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat");
+                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    process.Start();
+                }
 
             }
             else
-                MessageBox.Show("You are already using the latest version.", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + Main.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        
+            updateToolStripButton.Enabled = true;
         }
     }
 }
