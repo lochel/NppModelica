@@ -674,7 +674,9 @@ namespace NppModelica
 
         private void callGraphViewerToolStripButton_Click(object sender, EventArgs e)
         {
+            callGraphViewerToolStripButton.Enabled = false;
             callGraphViewerToolStripMenuItem_Click(sender, e);
+            callGraphViewerToolStripButton.Enabled = true;
         }
 
         private void graphvizSettingsToolStripButton_Click(object sender, EventArgs e)
