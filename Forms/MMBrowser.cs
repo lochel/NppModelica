@@ -307,7 +307,7 @@ namespace NppModelica
             treeView1.EndUpdate();
         }
 
-        private void generateCallGraph()
+        private Boolean generateCallGraph()
         {
             String fullfilename = System.IO.Path.Combine(path, filename);
             String extension = System.IO.Path.GetExtension(filename);
@@ -344,6 +344,7 @@ namespace NppModelica
                         process.WaitForExit();
 
                         System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                        return true;
                     }
                     catch (Exception e)
                     {
@@ -385,6 +386,7 @@ namespace NppModelica
                         process.WaitForExit();
 
                         System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                        return true;
                     }
                     catch (Exception e)
                     {
@@ -393,6 +395,8 @@ namespace NppModelica
                     }
                 }
             }
+
+            return false;
         }
 
         private String updateFileAndPath()
@@ -470,9 +474,8 @@ namespace NppModelica
 
         private void callGraphViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            generateCallGraph();
             String filename = System.IO.Path.Combine(dataPath, "temp.svg");
-            if (System.IO.File.Exists(filename))
+            if (generateCallGraph() && System.IO.File.Exists(filename))
             {
                 System.Diagnostics.Process.Start(filename);
             }
