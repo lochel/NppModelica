@@ -47,7 +47,6 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.typeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.callGraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.callGraphViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -74,7 +73,6 @@
             this.uniontypeToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.functionToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.callGraphToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.callGraphViewerToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.consoleToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -208,7 +206,6 @@
             this.uniontypeToolStripMenuItem,
             this.functionToolStripMenuItem,
             this.toolStripSeparator1,
-            this.callGraphToolStripMenuItem,
             this.callGraphViewerToolStripMenuItem,
             this.toolStripSeparator2,
             this.consoleToolStripMenuItem});
@@ -240,13 +237,6 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(219, 6);
             // 
-            // callGraphToolStripMenuItem
-            // 
-            this.callGraphToolStripMenuItem.Name = "callGraphToolStripMenuItem";
-            this.callGraphToolStripMenuItem.Size = new System.Drawing.Size(222, 30);
-            this.callGraphToolStripMenuItem.Text = "Call Graph";
-            this.callGraphToolStripMenuItem.Click += new System.EventHandler(this.callGraphToolStripMenuItem_Click);
-            // 
             // callGraphViewerToolStripMenuItem
             // 
             this.callGraphViewerToolStripMenuItem.Name = "callGraphViewerToolStripMenuItem";
@@ -276,7 +266,7 @@
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(396, 94);
+            this.richTextBox1.Size = new System.Drawing.Size(396, 90);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             this.richTextBox1.WordWrap = false;
@@ -299,7 +289,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.treeView1);
-            this.splitContainer2.Size = new System.Drawing.Size(382, 671);
+            this.splitContainer2.Size = new System.Drawing.Size(382, 642);
             this.splitContainer2.SplitterDistance = 25;
             this.splitContainer2.SplitterWidth = 2;
             this.splitContainer2.TabIndex = 1;
@@ -322,7 +312,7 @@
             this.treeView1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.treeView1.Name = "treeView1";
             this.treeView1.ShowNodeToolTips = true;
-            this.treeView1.Size = new System.Drawing.Size(382, 644);
+            this.treeView1.Size = new System.Drawing.Size(382, 615);
             this.treeView1.TabIndex = 0;
             this.treeView1.DoubleClick += new System.EventHandler(this.treeView1_DoubleClick);
             this.treeView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView1_KeyDown);
@@ -344,8 +334,8 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.richTextBox1);
             this.splitContainer1.Panel2MinSize = 0;
-            this.splitContainer1.Size = new System.Drawing.Size(396, 810);
-            this.splitContainer1.SplitterDistance = 710;
+            this.splitContainer1.Size = new System.Drawing.Size(396, 777);
+            this.splitContainer1.SplitterDistance = 681;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -357,7 +347,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(396, 710);
+            this.tabControl1.Size = new System.Drawing.Size(396, 681);
             this.tabControl1.TabIndex = 1;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -367,7 +357,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(388, 677);
+            this.tabPage1.Size = new System.Drawing.Size(388, 648);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Outline";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -465,7 +455,7 @@
             this.toolStripContainer1.ContentPanel.AutoScroll = true;
             this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
             this.toolStripContainer1.ContentPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(396, 810);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(396, 777);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
@@ -478,8 +468,8 @@
             // 
             // toolStripContainer1.TopToolStripPanel
             // 
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             // 
             // toolStrip1
             // 
@@ -494,7 +484,6 @@
             this.uniontypeToolStripButton,
             this.functionToolStripButton,
             this.toolStripSeparator5,
-            this.callGraphToolStripButton,
             this.callGraphViewerToolStripButton,
             this.toolStripSeparator6,
             this.consoleToolStripButton,
@@ -503,7 +492,7 @@
             this.updateToolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(280, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(257, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // publicOnlyToolStripButton
@@ -575,16 +564,6 @@
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // callGraphToolStripButton
-            // 
-            this.callGraphToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.callGraphToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("callGraphToolStripButton.Image")));
-            this.callGraphToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.callGraphToolStripButton.Name = "callGraphToolStripButton";
-            this.callGraphToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.callGraphToolStripButton.Text = "call graph";
-            this.callGraphToolStripButton.Click += new System.EventHandler(this.callGraphToolStripButton_Click);
             // 
             // callGraphViewerToolStripButton
             // 
@@ -708,7 +687,6 @@
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
         private System.IO.FileSystemWatcher fileSystemWatcher1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem callGraphToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox tstbGraphvizPath;
         private System.Windows.Forms.ToolStripMenuItem callGraphViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem publicOnlyToolStripMenuItem;
@@ -731,7 +709,6 @@
         private System.Windows.Forms.ToolStripButton functionToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton consoleToolStripButton;
-        private System.Windows.Forms.ToolStripButton callGraphToolStripButton;
         private System.Windows.Forms.ToolStripButton callGraphViewerToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;

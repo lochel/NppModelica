@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NppPluginNET;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Text;
 using System.Windows.Forms;
-using NppPluginNET;
-using System.Net;
 
 namespace NppModelica
 {
@@ -309,90 +309,87 @@ namespace NppModelica
 
         private void generateCallGraph()
         {
-            if (callGraphToolStripMenuItem.Checked)
+            String fullfilename = System.IO.Path.Combine(path, filename);
+            String extension = System.IO.Path.GetExtension(filename);
+
+            if (extension == ".mo")
             {
-                String fullfilename = System.IO.Path.Combine(path, filename);
-                String extension = System.IO.Path.GetExtension(filename);
-
-                if (extension == ".mo")
+                foreach (MetaModelica.Package p in mmScope.packages.Values)
                 {
-                    foreach (MetaModelica.Package p in mmScope.packages.Values)
+                    try
                     {
-                        try
+                        List<string> unusedFunctions;
+                        String dotSource = p.getGraphvizSource(out unusedFunctions);
+                        if (unusedFunctions.Count > 0)
                         {
-                            List<string> unusedFunctions;
-                            String dotSource = p.getGraphvizSource(out unusedFunctions);
-                            if (unusedFunctions.Count > 0)
-                            {
-                                if (unusedFunctions.Count > 1)
-                                    richTextBox1.Text = unusedFunctions.Count + " unused protected functions found:";
-                                else
-                                    richTextBox1.Text = "1 unused protected function found:";
-
-                                foreach (String fnc in unusedFunctions)
-                                    richTextBox1.Text += "\n  - " + fnc;
-                            }
+                            if (unusedFunctions.Count > 1)
+                                richTextBox1.Text = unusedFunctions.Count + " unused protected functions found:";
                             else
-                                richTextBox1.Text = "No unused protected functions found";
+                                richTextBox1.Text = "1 unused protected function found:";
 
-                            System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
-
-                            Process process = new Process();
-                            process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
-                            process.StartInfo.WorkingDirectory = dataPath;
-                            process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
-                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                            process.Start();
-                            process.WaitForExit();
-
-                            System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                            foreach (String fnc in unusedFunctions)
+                                richTextBox1.Text += "\n  - " + fnc;
                         }
-                        catch (Exception e)
-                        {
-                            toolStripStatusLabel1.Text = e.Message;
-                            MessageBox.Show(e.Message);
-                        }
+                        else
+                            richTextBox1.Text = "No unused protected functions found";
+
+                        System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
+
+                        Process process = new Process();
+                        process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
+                        process.StartInfo.WorkingDirectory = dataPath;
+                        process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        process.Start();
+                        process.WaitForExit();
+
+                        System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                    }
+                    catch (Exception e)
+                    {
+                        toolStripStatusLabel1.Text = e.Message;
+                        MessageBox.Show(e.Message);
                     }
                 }
+            }
 
-                if (extension == ".tpl")
+            if (extension == ".tpl")
+            {
+                foreach (Susan.Package p in tplScope.packages.Values)
                 {
-                    foreach (Susan.Package p in tplScope.packages.Values)
+                    try
                     {
-                        try
+                        List<string> unusedFunctions;
+                        String dotSource = p.getGraphvizSource(out unusedFunctions);
+                        if (unusedFunctions.Count > 0)
                         {
-                            List<string> unusedFunctions;
-                            String dotSource = p.getGraphvizSource(out unusedFunctions);
-                            if (unusedFunctions.Count > 0)
-                            {
-                                if (unusedFunctions.Count > 1)
-                                    richTextBox1.Text = unusedFunctions.Count + " top-level templates found:";
-                                else
-                                    richTextBox1.Text = "1 top-level template found:";
-
-                                foreach (String fnc in unusedFunctions)
-                                    richTextBox1.Text += "\n  - " + fnc;
-                            }
+                            if (unusedFunctions.Count > 1)
+                                richTextBox1.Text = unusedFunctions.Count + " top-level templates found:";
                             else
-                                richTextBox1.Text = "No top-level templates found";
+                                richTextBox1.Text = "1 top-level template found:";
 
-                            System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
-
-                            Process process = new Process();
-                            process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
-                            process.StartInfo.WorkingDirectory = dataPath;
-                            process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
-                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                            process.Start();
-                            process.WaitForExit();
-
-                            System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                            foreach (String fnc in unusedFunctions)
+                                richTextBox1.Text += "\n  - " + fnc;
                         }
-                        catch (Exception e)
-                        {
-                            toolStripStatusLabel1.Text = e.Message;
-                            MessageBox.Show(e.Message);
-                        }
+                        else
+                            richTextBox1.Text = "No top-level templates found";
+
+                        System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, p.name + ".dot"), dotSource);
+
+                        Process process = new Process();
+                        process.StartInfo.FileName = System.IO.Path.Combine(tstbGraphvizPath.Text, @"bin\dot");
+                        process.StartInfo.WorkingDirectory = dataPath;
+                        process.StartInfo.Arguments = "-Tsvg " + p.name + ".dot -o temp.svg";
+                        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        process.Start();
+                        process.WaitForExit();
+
+                        System.IO.File.Delete(System.IO.Path.Combine(dataPath, p.name + ".dot"));
+                    }
+                    catch (Exception e)
+                    {
+                        toolStripStatusLabel1.Text = e.Message;
+                        MessageBox.Show(e.Message);
                     }
                 }
             }
@@ -430,7 +427,6 @@ namespace NppModelica
                 case (uint)NppMsg.NPPN_FILESAVED:
                     updateFilename();
                     updateOutline(true);
-                    generateCallGraph();
                     break;
             }
         }
@@ -474,21 +470,12 @@ namespace NppModelica
 
         private void callGraphViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            callGraphToolStripButton.Checked = callGraphToolStripMenuItem.Checked = true;
-
             generateCallGraph();
             String filename = System.IO.Path.Combine(dataPath, "temp.svg");
             if (System.IO.File.Exists(filename))
+            {
                 System.Diagnostics.Process.Start(filename);
-        }
-
-        private void callGraphToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            callGraphToolStripMenuItem.Checked = !callGraphToolStripMenuItem.Checked;
-            callGraphToolStripButton.Checked = !callGraphToolStripButton.Checked;
-
-            if (callGraphToolStripMenuItem.Checked)
-                generateCallGraph();
+            }
         }
 
         private void publicOnlyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -683,11 +670,6 @@ namespace NppModelica
         private void consoleToolStripButton_Click(object sender, EventArgs e)
         {
             consoleToolStripMenuItem_Click(sender, e);
-        }
-
-        private void callGraphToolStripButton_Click(object sender, EventArgs e)
-        {
-            callGraphToolStripMenuItem_Click(sender, e);
         }
 
         private void callGraphViewerToolStripButton_Click(object sender, EventArgs e)
