@@ -886,19 +886,6 @@ namespace MetaModelica
         public Hashtable functions;
         public Hashtable packages;
 
-        protected const Int32 iPackage = 0;
-        protected const Int32 iPackagePublic = 1;
-        protected const Int32 iFunction = 2;
-        protected const Int32 iFunctionPublic = 3;
-        protected const Int32 iUniontype = 4;
-        protected const Int32 iUniontypePublic = 5;
-        protected const Int32 iConstant = 6;
-        protected const Int32 iConstantPublic = 7;
-        protected const Int32 iType = 8;
-        protected const Int32 iTypePublic = 9;
-        protected const Int32 iRecord = 10;
-        protected const Int32 iRecordPublic = 11;
-
         public Scope()
         {
             constants = new Hashtable();
