@@ -87,6 +87,7 @@ namespace NppModelica
             
             Main.initialized = true;
 
+            updateFilename();
             updateOutline(true);
         }
 
