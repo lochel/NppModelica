@@ -696,64 +696,74 @@ namespace NppModelica
                 updateExplorer(true);
         }
 
+        private string getRedirectedUrl(string url)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+            webRequest.AllowAutoRedirect = false;  // IMPORTANT
+
+            webRequest.Timeout = 10000;           // timeout 10s
+            webRequest.Method = "HEAD";
+            // Get the response ...
+            HttpWebResponse webResponse;
+            using (webResponse = (HttpWebResponse)webRequest.GetResponse())
+            {
+                // Now look to see if it's a redirect
+                if ((int)webResponse.StatusCode >= 300 && (int)webResponse.StatusCode <= 399)
+                {
+                    string uriString = webResponse.Headers["Location"];
+                    webResponse.Close(); // don't forget to close it - or bad things happen!
+                    return uriString;
+                }
+            }
+
+            return null;
+        }
+
         private void updateToolStripButton_Click(object sender, EventArgs e)
         {
             updateToolStripButton.Enabled = false;
 
-            string[] ids = Main.PluginVersionNumber.Split('.');
-            String version = "";
-            bool done = false;
-            for (int i = 0; i < ids.Length && !done; ++i)
-            {
-                version = "";
-                for (int j = 0; j < ids.Length && !done; ++j)
-                {
-                    if (j < i)
-                        version += "." + Convert.ToString(ids[j]);
-                    else if (j == i)
-                        version += "." + Convert.ToString(Convert.ToInt32(ids[j]) + 1);
-                    else
-                        version += ".0";
-                }
-                version = version.Substring(1);
-                try
-                {
-                    using (WebClient client = new WebClient())
-                    {
-                        client.DownloadFile("https://github.com/lochel/NppModelica/releases/download/v" + version + "/NppModelica.dll", System.IO.Path.Combine(dataPath, "NppModelica_new.dll"));
-                    }
-                    done = true;
-                }
-                catch (Exception)
-                {
-                }
-            }
+            // try to get version from redirection of https://github.com/lochel/NppModelica/releases/latest
+            String redirectedUrl = getRedirectedUrl("https://github.com/lochel/NppModelica/releases/latest");
+            String latestVersion = redirectedUrl.Substring(redirectedUrl.LastIndexOf(@"/")+1);
 
-            if (done)
+            if(latestVersion.Substring(1) == Main.PluginVersionNumber)
+                MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + Main.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
             {
-                if (MessageBox.Show("Do you want to update version " + Main.PluginVersion + " to version " + version + "?\n\nPlease make sure that all your files are saved before you continue!\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                if (MessageBox.Show("Do you want to update version " + Main.PluginVersion + " to version " + latestVersion + "?\n\nPlease make sure that all your files are saved before you continue!\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
                 {
-                    System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat"), @"cd " + dataPath + @"
+                    try
+                    {
+                        using (WebClient client = new WebClient())
+                        {
+                            client.DownloadFile("https://github.com/lochel/NppModelica/releases/download/" + latestVersion + "/NppModelica.dll", System.IO.Path.Combine(dataPath, "NppModelica_" + latestVersion + ".dll"));
+
+                            System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat"), @"cd " + dataPath + @"
 for /f ""tokens=*"" %%f in ('wmic process where ""name='notepad++.exe'"" get ExecutablePath /value ^| find ""=""') do set ""%%f""
 taskkill /IM notepad++.exe
 timeout 1
-move /Y NppModelica_new.dll """ + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\NppModelica.dll""
+move /Y NppModelica_" + latestVersion + @".dll """ + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\NppModelica.dll""
 start """" ""%ExecutablePath%""
 ");
 
-                    Process process = new Process();
-                    process.StartInfo.FileName = "cmd.exe";
-                    process.StartInfo.Verb = "runas";
-                    process.StartInfo.WorkingDirectory = dataPath;
-                    process.StartInfo.Arguments = "/c " + System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat");
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    process.Start();
+                            Process process = new Process();
+                            process.StartInfo.FileName = "cmd.exe";
+                            process.StartInfo.Verb = "runas";
+                            process.StartInfo.WorkingDirectory = dataPath;
+                            process.StartInfo.Arguments = "/c " + System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat");
+                            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            process.Start();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        if (MessageBox.Show("Sorry - something went wrong. Please try again or download the latest version manualy.", Main.PluginName, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.Yes)
+                            System.Diagnostics.Process.Start("https://github.com/lochel/NppModelica");
+                    }
                 }
-
             }
-            else
-                MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + Main.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
-        
+
             updateToolStripButton.Enabled = true;
         }
     }
