@@ -719,6 +719,29 @@ namespace NppModelica
             return null;
         }
 
+        private Boolean versionGreater(string v1, string v2)
+        {
+            string[] ids1 = v1.Split('.');
+            string[] ids2 = v2.Split('.');
+
+            for (int i = 0; i < Math.Min(ids1.Length, ids2.Length); ++i)
+            {
+                Int32 id1 = Convert.ToInt32(ids1[i]);
+                Int32 id2 = Convert.ToInt32(ids2[i]);
+                if (id1 != id2)
+                    return id1 > id2;
+            }
+
+            for (int i = Math.Min(ids1.Length, ids2.Length); i < Math.Max(ids1.Length, ids2.Length); ++i)
+            {
+                Int32 id = ids1.Length > ids2.Length ? Convert.ToInt32(ids1[i]) : Convert.ToInt32(ids2[i]);
+                if (id != 0)
+                    return ids1.Length > ids2.Length;
+            }
+
+            return false;
+        }
+
         private void updateToolStripButton_Click(object sender, EventArgs e)
         {
             updateToolStripButton.Enabled = false;
@@ -727,7 +750,7 @@ namespace NppModelica
             String redirectedUrl = getRedirectedUrl("https://github.com/lochel/NppModelica/releases/latest");
             String latestVersion = redirectedUrl.Substring(redirectedUrl.LastIndexOf(@"/")+1);
 
-            if(latestVersion.Substring(1) == Main.PluginVersionNumber)
+            if(!versionGreater(latestVersion.Substring(1), Main.PluginVersionNumber))
                 MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + Main.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
             {
