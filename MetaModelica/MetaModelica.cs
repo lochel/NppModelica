@@ -831,7 +831,7 @@ namespace MetaModelica
                 foreach (MetaModelica.Type typ in publicTypes.Values)
                     node.Nodes.AddRange(typ.getTreeNodes(true, filter));
             }
-            if (showFunctions && !showPublicOnly)
+            if (showTypes && !showPublicOnly)
             {
                 foreach (MetaModelica.Type typ in protectedTypes.Values)
                     node.Nodes.AddRange(typ.getTreeNodes(false, filter));
