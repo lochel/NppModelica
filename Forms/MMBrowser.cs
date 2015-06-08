@@ -105,6 +105,21 @@ namespace NppModelica
             Main.cmdAbout();
         }
 
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return && treeView1.Nodes.Count > 0)
+            {
+                TreeNode node = treeView1.Nodes[0];
+                while(node.Nodes.Count>0)
+                    node = node.Nodes[0];
+                treeView1.SelectedNode = node;
+                treeView1_DoubleClick(sender, null);
+
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
         private void treeView1_DoubleClick(object sender, EventArgs e)
         {
             try
@@ -588,6 +603,18 @@ namespace NppModelica
             }
         }
 
+        private void textBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return && listBox1.Items.Count > 0)
+            {
+                listBox1.SelectedIndex = 0;
+                listBox1_MouseDoubleClick(sender, null);
+
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
         private void listBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             string file = (string)listBox1.Items[listBox1.SelectedIndex];
@@ -595,6 +622,8 @@ namespace NppModelica
             {
                 Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, new StringBuilder(System.IO.Path.Combine(parentPath, file)));
                 tabControl1.SelectedIndex = 0;
+
+                textBox2.Text = "";
             }
         }
 

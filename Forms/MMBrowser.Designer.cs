@@ -303,6 +303,7 @@
             this.textBox1.Size = new System.Drawing.Size(382, 30);
             this.textBox1.TabIndex = 0;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // treeView1
             // 
@@ -405,6 +406,7 @@
             this.textBox2.Size = new System.Drawing.Size(382, 30);
             this.textBox2.TabIndex = 0;
             this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            this.textBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox2_KeyDown);
             // 
             // listBox1
             // 
