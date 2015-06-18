@@ -6,6 +6,9 @@ NppModelica is a plugin for Notepad++ that provides an outline and call graph fo
 ## Download binaries
 You will find the [latest release](../../releases/latest) here.
 
+* [v1.0.4](../../releases/tag/v1.0.4)
+  * [improved] Make outline and project explorer usable via keyboard
+  * [fixed] Add horizontal scrollbar to project explorer
 * [v1.0.3](../../releases/tag/v1.0.3)
   * [fixed] Fixed outline for protected types
 * [v1.0.2](../../releases/tag/v1.0.2)
