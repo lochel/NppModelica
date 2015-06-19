@@ -640,27 +640,29 @@ namespace NppModelica
             String fullfilename = System.IO.Path.Combine(path, filename);
             String extension = System.IO.Path.GetExtension(filename);
 
-            if (extension != ".mo" && extension != ".tpl")
-                return;
-
-            Boolean parentPathChanged = parentPath != new System.IO.DirectoryInfo(path).Parent.FullName;
-            parentPath = new System.IO.DirectoryInfo(path).Parent.FullName;
-
-            if (parentPathChanged && updateTree)
+            // collect all files for "project explorer"
+            if (extension == ".mo" || extension == ".tpl")
             {
-                allFiles = new List<string>();
+                Boolean parentPathChanged = parentPath != new System.IO.DirectoryInfo(path).Parent.FullName;
+                parentPath = new System.IO.DirectoryInfo(path).Parent.FullName;
 
-                allFiles.AddRange(System.IO.Directory.GetFiles(parentPath, "*.tpl", System.IO.SearchOption.AllDirectories));
-
-                foreach(string file in System.IO.Directory.GetFiles(parentPath, "*.mo", System.IO.SearchOption.AllDirectories))
+                if (parentPathChanged && updateTree)
                 {
-                    if (!allFiles.Contains(file.Substring(0, file.Length - 3) + ".tpl") && !file.Contains("\\Compiler\\boot\\"))
+                    allFiles = new List<string>();
+
+                    allFiles.AddRange(System.IO.Directory.GetFiles(parentPath, "*.tpl", System.IO.SearchOption.AllDirectories));
+
+                    foreach (string file in System.IO.Directory.GetFiles(parentPath, "*.mo", System.IO.SearchOption.AllDirectories))
                     {
-                        allFiles.Add(file);
+                        if (!allFiles.Contains(file.Substring(0, file.Length - 3) + ".tpl") && !file.Contains("\\Compiler\\boot\\"))
+                        {
+                            allFiles.Add(file);
+                        }
                     }
                 }
             }
 
+            // filter "project explorer"
             listBox1.Items.Clear();
             foreach (string file in allFiles)
             {
