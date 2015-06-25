@@ -62,7 +62,6 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.publicOnlyToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -425,26 +424,22 @@
             // 
             // toolStripStatusLabel1
             // 
+            this.toolStripStatusLabel1.AutoToolTip = true;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(182, 25);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(350, 25);
+            this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.Text = "no workspace loaded";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // statusStrip1
             // 
             this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2});
+            this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(396, 30);
             this.statusStrip1.TabIndex = 0;
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(64, 25);
-            this.toolStripStatusLabel2.Text = "[vXXX]";
             // 
             // toolStripContainer1
             // 
@@ -714,7 +709,6 @@
         private System.Windows.Forms.ToolStripButton consoleToolStripButton;
         private System.Windows.Forms.ToolStripButton callGraphViewerToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripButton graphvizSettingsToolStripButton;
         private System.Windows.Forms.ToolStripButton updateToolStripButton;

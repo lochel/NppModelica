@@ -28,8 +28,6 @@ namespace NppModelica
         {
             InitializeComponent();
 
-            toolStripStatusLabel2.Text = "[v" + Main.PluginVersion + "]";
-
             // Load the images in an ImageList.
             ImageList myImageList = new ImageList();
             myImageList.Images.Add(Properties.Resources.package);           //  0
@@ -661,6 +659,8 @@ namespace NppModelica
                     }
                 }
             }
+
+            toolStripStatusLabel1.Text = parentPath;
 
             // filter "project explorer"
             listBox1.Items.Clear();
