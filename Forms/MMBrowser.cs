@@ -796,7 +796,7 @@ namespace NppModelica
                             System.IO.File.WriteAllText(System.IO.Path.Combine(dataPath, "UpdateNppModelica.bat"), @"cd " + dataPath + @"
 for /f ""tokens=*"" %%f in ('wmic process where ""name='notepad++.exe'"" get ExecutablePath /value ^| find ""=""') do set ""%%f""
 taskkill /IM notepad++.exe
-timeout 1
+timeout 3
 move /Y NppModelica_" + latestVersion + @".dll """ + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\NppModelica.dll""
 start """" ""%ExecutablePath%""
 ");
