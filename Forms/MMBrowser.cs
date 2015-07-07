@@ -724,7 +724,12 @@ namespace NppModelica
             isExplorerActive = (tabControl1.SelectedIndex == 1);
 
             if (isExplorerActive)
+            {
                 updateExplorer(true);
+                textBox2.Focus();
+            }
+            else
+                textBox1.Focus();
         }
 
         private string getRedirectedUrl(string url)
