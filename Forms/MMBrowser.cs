@@ -257,7 +257,7 @@ namespace NppModelica
             treeView1.Nodes.Clear();
 
             richTextBox1.Text = "";
-            toolStripStatusLabel1.Text = "";
+            toolStripStatusLabel1.Text = "no outline available";
 
             String fullfilename = System.IO.Path.Combine(path, filename);
             String extension = System.IO.Path.GetExtension(filename);
@@ -660,7 +660,10 @@ namespace NppModelica
                 }
             }
 
-            toolStripStatusLabel1.Text = parentPath;
+            if(allFiles.Count > 0)
+                toolStripStatusLabel1.Text = parentPath;
+            else
+                toolStripStatusLabel1.Text = "no workspace loaded";
 
             // filter "project explorer"
             listBox1.Items.Clear();
@@ -724,7 +727,12 @@ namespace NppModelica
             isExplorerActive = (tabControl1.SelectedIndex == 1);
 
             if (isExplorerActive)
+            {
                 updateExplorer(true);
+                textBox2.Focus();
+            }
+            else
+                textBox1.Focus();
         }
 
         private string getRedirectedUrl(string url)
