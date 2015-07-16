@@ -652,7 +652,7 @@ namespace NppModelica
 
                     foreach (string file in System.IO.Directory.GetFiles(parentPath, "*.mo", System.IO.SearchOption.AllDirectories))
                     {
-                        if (!allFiles.Contains(file.Substring(0, file.Length - 3) + ".tpl") && !file.Contains("\\Compiler\\boot\\"))
+                        if (!allFiles.Contains(file.Substring(0, file.Length - 3) + ".tpl") && !file.Contains("\\Compiler\\boot\\") && !file.Contains("\\Compiler\\Stubs\\"))
                         {
                             allFiles.Add(file);
                         }
