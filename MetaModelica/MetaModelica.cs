@@ -278,8 +278,15 @@ namespace MetaModelica
     {
         public string name;
         public Parser.Position startPosition;
+        public Boolean isEncapsulated;
         public Hashtable records;
         public String description;
+
+        public Hashtable publicImports;
+        public Hashtable publicFunctions;
+
+        public Hashtable protectedImports;
+        public Hashtable protectedFunctions;
 
         protected const Int32 iUniontype = 4;
         protected const Int32 iUniontypePublic = 5;
@@ -288,7 +295,25 @@ namespace MetaModelica
         {
             Int32 startIndex = i;
             this.startPosition = tokenList[i].startPosition;
-            this.records = new Hashtable();
+            Boolean isPublic = true;
+
+            records = new Hashtable();
+
+            publicImports = new Hashtable();
+            publicFunctions = new Hashtable();
+
+            protectedImports = new Hashtable();
+            protectedFunctions = new Hashtable();
+
+            if (i < tokenList.Count && tokenList[i].isIDENT("encapsulated"))
+            {
+                i++;
+                isEncapsulated = true;
+            }
+            else
+            {
+                isEncapsulated = false;
+            }
 
             if (i < tokenList.Count && tokenList[i].isIDENT("uniontype"))
             {
@@ -309,6 +334,17 @@ namespace MetaModelica
                 throw new Exception("IDENT expected: got " + tokenList[i].ToString());
             }
 
+            // skip template types
+            if (i < tokenList.Count && tokenList[i].isSYMBOL("<"))
+            {
+                i++;
+                while (i + 1 < tokenList.Count && !(tokenList[i].isSYMBOL(">")))
+                {
+                    i++;
+                }
+                i++;
+            }
+
             if (i < tokenList.Count && tokenList[i].isSTRING())
             {
                 this.description = tokenList[i].value;
@@ -317,18 +353,67 @@ namespace MetaModelica
             else
                 this.description = "";
 
-            // skip type
             while (i + 2 < tokenList.Count && !(tokenList[i].isIDENT("end") && tokenList[i + 1].isIDENT(name) && tokenList[i + 2].isSYMBOL(";")))
             {
-                try
+                if (i < tokenList.Count && tokenList[i].isIDENT("public"))
                 {
-                    Record rcd = new Record(tokenList, i, out length);
-                    records.Add(rcd.name, rcd);
-                    i += length;
+                    isPublic = true;
+                    i++;
                 }
-                catch (Exception e)
+                else if (i < tokenList.Count && tokenList[i].isIDENT("protected"))
                 {
-                    throw new Exception("Error in uniontype: " + e.Message);
+                    isPublic = false;
+                    i++;
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("import"))
+                {
+                    try
+                    {
+                        Import imp = new Import(tokenList, i, out length);
+                        if (isPublic)
+                            publicImports.Add(imp.name, imp);
+                        else
+                            protectedImports.Add(imp.name, imp);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Uniontype: Error in constant {" + tokenList[i].startPosition + "}: " + e.Message);
+                    }
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("record"))
+                {
+                    try
+                    {
+                        Record rcd = new Record(tokenList, i, out length);
+                        records.Add(rcd.name, rcd);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Uniontype: Error in record: " + e.Message);
+                    }
+                }
+                else if (i < tokenList.Count && tokenList[i].isIDENT("function"))
+                {
+                    try
+                    {
+                        Function fcn = new Function(tokenList, i, out length);
+                        if (isPublic)
+                            publicFunctions.Add(fcn.name, fcn);
+                        else
+                            protectedFunctions.Add(fcn.name, fcn);
+                        i += length;
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception("Uniontype: Error in function: " + e.Message);
+                    }
+                }
+                else
+                {
+                    //throw new Exception("Uniontype: Unexpected token: " + tokenList[i].ToString());
+                    i++;
                 }
             }
 
@@ -638,7 +723,7 @@ namespace MetaModelica
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Scope: Error in record: " + e.Message);
+                        throw new Exception("Package: Error in record: " + e.Message);
                     }
                 }
                 else if (i < tokenList.Count && tokenList[i].isIDENT("uniontype"))
@@ -654,7 +739,7 @@ namespace MetaModelica
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Scope: Error in uniontype: " + e.Message);
+                        throw new Exception("Package: Error in uniontype: " + e.Message);
                     }
                 }
                 else if (i < tokenList.Count && tokenList[i].isIDENT("function"))
@@ -942,7 +1027,8 @@ namespace MetaModelica
                         throw new Exception("Scope: Error in record: " + e.Message);
                     }
                 }
-                else if (i < tokenList.Count && tokenList[i].isIDENT("uniontype"))
+                else if ((i < tokenList.Count && tokenList[i].isIDENT("uniontype")) ||
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("encapsulated") && tokenList[i + 1].isIDENT("uniontype")))
                 {
                     try
                     {
@@ -952,7 +1038,7 @@ namespace MetaModelica
                     }
                     catch (Exception e)
                     {
-                        throw new Exception("Scope: Error in uniontype: " + e.Message);
+                        throw new Exception("Scope: Error in uniontype: " + e.Message + "\n");
                     }
                 }
                 else if (i < tokenList.Count && tokenList[i].isIDENT("function"))
