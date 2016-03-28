@@ -430,7 +430,7 @@ namespace MetaModelica
             length = i - startIndex;
         }
 
-        public TreeNode[] getTreeNodes(Boolean isPublic, string filter)
+        public TreeNode[] getTreeNodes(Boolean isPublic, Boolean showFunctions, Boolean showPublicOnly, string filter)
         {
             List<TreeNode> nodes = new List<TreeNode>();
             filter = filter.ToLower();
@@ -454,6 +454,17 @@ namespace MetaModelica
             if (name.ToLower().Contains(filter) || !emptyUty)
             {
                 nodes.Add(utyNode);
+            }
+
+            if (showFunctions)
+            {
+                foreach (MetaModelica.Function fcn in publicFunctions.Values)
+                    utyNode.Nodes.AddRange(fcn.getTreeNodes(true, filter));
+            }
+            if (showFunctions && !showPublicOnly)
+            {
+                foreach (MetaModelica.Function fcn in protectedFunctions.Values)
+                    utyNode.Nodes.AddRange(fcn.getTreeNodes(false, filter));
             }
 
             return nodes.ToArray();
@@ -955,12 +966,12 @@ namespace MetaModelica
             if (showUniontypes)
             {
                 foreach (MetaModelica.Uniontype uty in publicUniontypes.Values)
-                    node.Nodes.AddRange(uty.getTreeNodes(true, filter));
+                    node.Nodes.AddRange(uty.getTreeNodes(true, showFunctions, showPublicOnly, filter));
             }
             if (showUniontypes && !showPublicOnly)
             {
                 foreach (MetaModelica.Uniontype uty in protectedUniontypes.Values)
-                    node.Nodes.AddRange(uty.getTreeNodes(false, filter));
+                    node.Nodes.AddRange(uty.getTreeNodes(false, showFunctions, showPublicOnly, filter));
             }
 
             node.Expand();
@@ -1144,11 +1155,14 @@ namespace MetaModelica
             if (showUniontypes)
             {
                 foreach (MetaModelica.Uniontype uty in uniontypes.Values)
-                    nodes.AddRange(uty.getTreeNodes(true, filter));
+                    nodes.AddRange(uty.getTreeNodes(true, showFunctions, showPublicOnly, filter));
             }
 
             foreach (MetaModelica.Package p in packages.Values)
                 nodes.AddRange(p.getTreeNodes(true, showConstants, showTypes, showRecords, showUniontypes, showFunctions, showPublicOnly, filter));
+
+            foreach(TreeNode node in nodes)
+                node.Expand();
 
             return nodes.ToArray();
         }
