@@ -394,7 +394,8 @@ namespace MetaModelica
                         throw new Exception("Uniontype: Error in record: " + e.Message);
                     }
                 }
-                else if (i < tokenList.Count && tokenList[i].isIDENT("function"))
+                else if ((i < tokenList.Count && tokenList[i].isIDENT("function")) ||
+                         (i + 1 < tokenList.Count && tokenList[i].isIDENT("impure") && tokenList[i + 1].isIDENT("function")))
                 {
                     try
                     {
@@ -412,7 +413,7 @@ namespace MetaModelica
                 }
                 else
                 {
-                    //throw new Exception("Uniontype: Unexpected token: " + tokenList[i].ToString());
+                    //throw new Exception("Uniontype: Unexpected token in function: " + tokenList[i].ToString());
                     i++;
                 }
             }
@@ -423,7 +424,7 @@ namespace MetaModelica
             }
             else
             {
-                throw new Exception("Error in uniontype");
+                throw new Exception("Uniontype: Unexpected token: " + tokenList[i].ToString());
             }
 
             length = i - startIndex;
@@ -461,6 +462,7 @@ namespace MetaModelica
 
     public class Function
     {
+        public Boolean impure;
         public String name;
         public String description;
         public Hashtable functionCalls;
@@ -478,7 +480,13 @@ namespace MetaModelica
 
             if (i < tokenList.Count && tokenList[i].isIDENT("function"))
             {
+                this.impure = false;
                 i++;
+            }
+            else if (i + 1 < tokenList.Count && tokenList[i].isIDENT("impure") && tokenList[i + 1].isIDENT("function"))
+            {
+                this.impure = true;
+                i += 2;
             }
             else
             {
