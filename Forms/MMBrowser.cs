@@ -23,6 +23,7 @@ namespace NppModelica
         private String dataPath = "";
 
         private List<String> allFiles = new List<string>();
+        private Dictionary<string, string> outlineFilter = new Dictionary<string, string>();
 
         public MMBrowser()
         {
@@ -444,6 +445,11 @@ namespace NppModelica
                 case (uint)NppMsg.NPPN_BUFFERACTIVATED:
                 case (uint)NppMsg.NPPN_FILESAVED:
                     updateFilename();
+                    // recover filter
+                    if (outlineFilter.ContainsKey(path + " - " + filename))
+                        textBox1.Text = outlineFilter[path + " - " + filename];
+                    else
+                        textBox1.Text = "";
                     updateOutline(true);
                     break;
             }
@@ -557,6 +563,7 @@ namespace NppModelica
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+            outlineFilter[path + " - " + filename] = textBox1.Text;
             updateOutline(false);
         }
 
