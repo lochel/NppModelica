@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NppModelica")]
-[assembly: AssemblyCopyright("Copyright © Lennart A. Ochel 2013-2015")]
+[assembly: AssemblyCopyright("Copyright © Lennart A. Ochel 2013-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(NppModelica.Main.PluginVersionNumber + ".*")]
-[assembly: AssemblyFileVersion(NppModelica.Main.PluginVersion)]
+//[assembly: AssemblyVersion(NppModelica.VersionNumber.PluginVersionNumber + ".*")]
+[assembly: AssemblyFileVersion(NppModelica.VersionNumber.PluginVersion)]
+[assembly: AssemblyInformationalVersion(NppModelica.VersionNumber.PluginVersion)] // a.k.a. "Product version"

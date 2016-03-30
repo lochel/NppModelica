@@ -1,0 +1,12 @@
+﻿namespace NppModelica
+{
+    public static class VersionNumber
+    {
+        public const string PluginVersionNumber = "﻿$$PluginVersionNumber$$";
+#if DEBUG
+        public const string PluginVersion = "$$PluginVersion$$-debug";
+#else
+        public const string PluginVersion = "$$PluginVersion$$";
+#endif
+    }
+}

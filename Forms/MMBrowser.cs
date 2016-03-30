@@ -758,23 +758,35 @@ namespace NppModelica
             return null;
         }
 
-        private Boolean versionGreater(string v1, string v2)
+        static private Boolean versionGreater(string v1, string v2)
         {
-            string[] ids1 = v1.Split('.');
-            string[] ids2 = v2.Split('.');
+            while (v1.Length > 0 && !Char.IsDigit(v1[0])) v1 = v1.Substring(1);
+            while (v2.Length > 0 && !Char.IsDigit(v2[0])) v2 = v2.Substring(1);
+
+            string[] ids1 = v1.Split(new[] { '.', '-' });
+            string[] ids2 = v2.Split(new[] { '.', '-' });
 
             for (int i = 0; i < Math.Min(ids1.Length, ids2.Length); ++i)
             {
-                Int32 id1 = Convert.ToInt32(ids1[i]);
-                Int32 id2 = Convert.ToInt32(ids2[i]);
-                if (id1 != id2)
-                    return id1 > id2;
+                Int32 id1;
+                Int32 id2;
+
+                Boolean b1 = Int32.TryParse(ids1[i], out id1);
+                Boolean b2 = Int32.TryParse(ids2[i], out id2);
+
+                if (b1 && b2)
+                {
+                    if (id1 != id2)
+                        return id1 > id2;
+                }
+                else
+                    return b1;
             }
 
             for (int i = Math.Min(ids1.Length, ids2.Length); i < Math.Max(ids1.Length, ids2.Length); ++i)
             {
-                Int32 id = ids1.Length > ids2.Length ? Convert.ToInt32(ids1[i]) : Convert.ToInt32(ids2[i]);
-                if (id != 0)
+                String id = ids1.Length > ids2.Length ? ids1[i] : ids2[i];
+                if (id != "0")
                     return ids1.Length > ids2.Length;
             }
 
@@ -789,11 +801,11 @@ namespace NppModelica
             String redirectedUrl = getRedirectedUrl("https://github.com/lochel/NppModelica/releases/latest");
             String latestVersion = redirectedUrl.Substring(redirectedUrl.LastIndexOf(@"/")+1);
 
-            if(!versionGreater(latestVersion.Substring(1), Main.PluginVersionNumber))
-                MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + Main.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (!versionGreater(latestVersion, VersionNumber.PluginVersionNumber))
+                MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + VersionNumber.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
             {
-                if (MessageBox.Show("Do you want to update version " + Main.PluginVersion + " to version " + latestVersion + "?\n\nPlease make sure that all your files are saved before you continue!\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                if (MessageBox.Show("Do you want to update version " + VersionNumber.PluginVersion + " to version " + latestVersion + "?\n\nPlease make sure that all your files are saved before you continue!\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
                 {
                     try
                     {

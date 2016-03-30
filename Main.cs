@@ -12,13 +12,6 @@ namespace NppModelica
     class Main
     {
         internal const string PluginName = "NppModelica";
-        internal const string PluginVersionNumber = "1.0.5";
-#if DEBUG
-        internal const string DebugSuffix = " (DEBUG)";
-#else
-        internal const string DebugSuffix = "";
-#endif
-        internal const string PluginVersion = PluginVersionNumber + "+dev" + DebugSuffix;
         static public string iniFilePath = null;
         public static MMBrowser frmMMBrowser = null;
         public static Boolean initialized = false;
@@ -66,7 +59,7 @@ namespace NppModelica
 
         internal static void cmdAbout()
         {
-            MessageBox.Show(PluginName + " Plugin for Notepad++\nVersion " + PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(PluginName + " Plugin for Notepad++\nVersion " + VersionNumber.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         internal static void cmdMMBrowser()
         {
