@@ -802,10 +802,10 @@ namespace NppModelica
             String latestVersion = redirectedUrl.Substring(redirectedUrl.LastIndexOf(@"/")+1);
 
             if (!versionGreater(latestVersion, VersionNumber.PluginVersionNumber))
-                MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + VersionNumber.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Main.PluginName + " Plugin for Notepad++ is already up-to-date.\nVersion " + VersionNumber.PluginVersion + "\n\n(c) 2013-2016, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
             {
-                if (MessageBox.Show("Do you want to update version " + VersionNumber.PluginVersion + " to version " + latestVersion + "?\n\nPlease make sure that all your files are saved before you continue!\n\n(c) 2013-2015, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
+                if (MessageBox.Show("Do you want to update version " + VersionNumber.PluginVersion + " to version " + latestVersion + "?\n\nPlease make sure that all your files are saved before you continue!\n\n(c) 2013-2016, Lennart A. Ochel", Main.PluginName, MessageBoxButtons.OKCancel, MessageBoxIcon.Information) == System.Windows.Forms.DialogResult.OK)
                 {
                     try
                     {

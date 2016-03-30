@@ -59,7 +59,7 @@ namespace NppModelica
 
         internal static void cmdAbout()
         {
-            MessageBox.Show(PluginName + " Plugin for Notepad++\nVersion " + VersionNumber.PluginVersion + "\n\n(c) 2013-2015, Lennart A. Ochel", PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(PluginName + " Plugin for Notepad++\nVersion " + VersionNumber.PluginVersion + "\n\n(c) 2013-2016, Lennart A. Ochel", PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         internal static void cmdMMBrowser()
         {
