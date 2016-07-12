@@ -504,6 +504,12 @@ namespace MetaModelica
                 throw new Exception("IDENT(\"function\") expected: got " + tokenList[i].ToString());
             }
 
+            // skip keyword 'extends'
+            if (i < tokenList.Count && tokenList[i].isIDENT("extends"))
+            {
+                i++;
+            }
+
             if (i < tokenList.Count && tokenList[i].isIDENT())
             {
                 this.name = tokenList[i].value;
